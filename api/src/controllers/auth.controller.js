@@ -21,3 +21,13 @@ export const loginUser = asyncHandler(async (req, res, next) => {
         data: user
     })
 })
+
+export const logoutUser = asyncHandler(async (req, res, next) => {
+    const isClear = await AuthService.logout(req.user.id)
+    if (isClear) {
+        TokenService.clearTokens(res)
+        return ApiResponse.success(res, {
+            message: "Logged out successfully"
+        })
+    }
+})

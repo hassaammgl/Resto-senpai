@@ -71,4 +71,8 @@ export class AuthService {
             user: DTO.userDto(user),
         };
     }
+    static async logout(_id) {
+        await User.findByIdAndUpdate({ _id }, { refreshToken: null })
+        return true
+    }
 }
