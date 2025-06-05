@@ -1,7 +1,9 @@
-import express, { json } from "express";
+import express from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors"
 import morgan from "morgan";
+import { errorHandler } from "./middlewares/error.middleware"
+import authRoutes from "./routes/auth.routes";
 
 const app = express();
 
@@ -22,6 +24,11 @@ app.get("/", (req, res) => {
         message: "Hello World"
     })
 })
+// routes
+app.use("/api/auth", authRoutes)
 
+
+// error handlers
+app.use(errorHandler)
 
 export default app;
