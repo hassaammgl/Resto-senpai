@@ -1,0 +1,26 @@
+{
+	"name": "restorantos",
+	"version": "1.0.0",
+	"description": "api for restorant management system",
+	"main": "index.js",
+	"type": "module",
+	"scripts": {
+		"start": "node .",
+		"dev": "bun --watch index"
+	},
+	"author": "hassaammgl",
+	"license": "ISC",
+	"dependencies": {
+		"argon2": "^0.43.0",
+		"colors": "^1.4.0",
+		"cookie-parser": "^1.4.7",
+		"cors": "^2.8.5",
+		"dotenv": "^16.5.0",
+		"express": "^5.1.0",
+		"express-rate-limit": "^7.5.0",
+		"joi": "^17.13.3",
+		"jsonwebtoken": "^9.0.2",
+		"mongoose": "^8.15.1",
+		"morgan": "^1.10.0"
+	}
+}
