@@ -12,3 +12,12 @@ export const registerUser = asyncHandler(async (req, res, next) => {
         data: user
     })
 })
+
+export const loginUser = asyncHandler(async (req, res, next) => {
+    const { user, accessToken, refreshToken } = await AuthService.login(req.body)
+    TokenService.setTokens(res, { accessToken, refreshToken })
+    return ApiResponse.success(res, {
+        message: "User login Succesfully",
+        data: user
+    })
+})

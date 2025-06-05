@@ -12,5 +12,7 @@ export const register = Joi.object({
 })
 export const login = Joi.object({
     email: Joi.string().required().email(),
-    password: Joi.string().required().min(6).pattern(new RegExp(passwordRegex)),
+    password: Joi.string().required().min(6)
+        .pattern(new RegExp(passwordRegex))
+        .message('Password must contain: 1 uppercase, 1 lowercase, 1 number, 1 special character (_@$!%*?&)'),
 })
