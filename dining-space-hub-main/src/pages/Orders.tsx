@@ -67,7 +67,7 @@ const Orders = () => {
               Filter
             </Button>
             <Button className="bg-amber-600 hover:bg-amber-700">
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="size-4 mr-2" />
               New Order
             </Button>
           </div>
