@@ -10,6 +10,7 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { NavLink } from "react-router";
+import { ModeToggle } from "@/components/mode-toggle";
 
 const LoginPage = () => {
 	const [email, setEmail] = useState("");
@@ -25,6 +26,9 @@ const LoginPage = () => {
 
 	return (
 		<div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+			<div className="absolute top-10 border-2">
+				<ModeToggle />
+			</div>
 			<Card className="w-full max-w-md">
 				<CardHeader className="text-center">
 					<CardTitle className="text-2xl font-bold">
@@ -68,12 +72,17 @@ const LoginPage = () => {
 						</Button>
 					</form>
 
-					<p className="mt-6 space-y-2">
-						Don't have an account?{" "}
-						<NavLink className={"text-amber-500"} to={"/signup"}>
-							Sign up
-						</NavLink>
-					</p>
+					<div className="mt-6 text-center">
+						<p className="text-sm text-gray-600">
+							Don't have an account?{" "}
+							<NavLink
+								className={"text-amber-500"}
+								to={"/signup"}
+							>
+								Sign up
+							</NavLink>
+						</p>
+					</div>
 				</CardContent>
 			</Card>
 		</div>

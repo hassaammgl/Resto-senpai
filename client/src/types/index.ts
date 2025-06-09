@@ -18,9 +18,11 @@ export type AuthState = {
 	error: string | null;
 	login: (email: string, password: string) => Promise<void>;
 	signup: (
+		name: string,
 		email: string,
-		password: string,
-		username: string
+		phoneNumber: string,
+		role: string,
+		password: string
 	) => Promise<void>;
 	logout: () => Promise<void>;
 	checkIsAuthenticated: () => Promise<void>;

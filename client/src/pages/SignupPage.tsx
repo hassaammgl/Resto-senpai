@@ -17,8 +17,17 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { ChefHat } from "lucide-react";
+import { NavLink, useNavigate } from "react-router";
+import { useAuth } from "@/store/auth";
+import { ModeToggle } from "@/components/mode-toggle";
+import { AxiosError } from "axios";
+import { useToast } from "@/hooks/useToast";
 
 const SignupPage = () => {
+	const { signup } = useAuth();
+	const { success, error } = useToast();
+	const navigate = useNavigate();
+
 	const [formData, setFormData] = useState({
 		name: "",
 		email: "",
@@ -60,11 +69,23 @@ const SignupPage = () => {
 		return Object.keys(newErrors).length === 0;
 	};
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 		if (validateForm()) {
-			console.log("Registration data:", formData);
-			// login(formData.email, formData.password);
+			try {
+				console.table(formData);
+				const { email, name, password, phone, role } = formData;
+				await signup(name, email, phone, role, password);
+				success("Account created successfully! 🎉");
+				navigate("/home");
+			} catch (err) {
+				const message =
+					(err as AxiosError<{ message?: string }>)?.response?.data
+						?.message ??
+					(err as Error)?.message ??
+					"Signup failed 😵";
+				error(message);
+			}
 		}
 	};
 
@@ -77,12 +98,15 @@ const SignupPage = () => {
 
 	return (
 		<div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+			<div className="fixed top-6 right-6">
+				<ModeToggle />
+			</div>
 			<Card className="w-full max-w-md">
 				<CardHeader className="text-center">
 					<div className="flex items-center justify-center gap-2 mb-2">
 						<ChefHat className="h-8 w-8 text-amber-600" />
 						<CardTitle className="text-2xl font-bold">
-							RestaurantOS
+							Resto-Senpai
 						</CardTitle>
 					</div>
 					<CardDescription>Create your account</CardDescription>
@@ -231,9 +255,12 @@ const SignupPage = () => {
 					<div className="mt-6 text-center">
 						<p className="text-sm text-gray-600">
 							Already have an account?{" "}
-							<button className="text-amber-600 hover:text-amber-700 font-medium">
+							<NavLink
+								to={"/login"}
+								className="text-amber-600 hover:text-amber-700 font-medium"
+							>
 								Login
-							</button>
+							</NavLink>
 						</p>
 					</div>
 				</CardContent>
