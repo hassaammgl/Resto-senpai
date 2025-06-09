@@ -9,6 +9,14 @@ type AuthUser = {
 	name: string;
 	email: string;
 	role: string;
+	phone: string;
+	loyaltyPoints?: string;
+	address: {
+		street: string;
+		city: string;
+		zipCode: string;
+		state: string;
+	};
 };
 
 export type AuthState = {

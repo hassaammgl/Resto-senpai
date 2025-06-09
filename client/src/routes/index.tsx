@@ -9,6 +9,10 @@ import StaffPage from "@/pages/admin/StaffPage";
 import InventoryPage from "@/pages/admin/InventoryPage";
 import PromotionsPage from "@/pages/admin/PromotionsPage";
 import SettingsPage from "@/pages/admin/SettingsPage";
+import CustomerCartPage from "@/pages/customer/CustomerCartPage";
+import CustomerMenuPage from "@/pages/customer/CustomerMenuPage";
+import CustomerOrdersPage from "@/pages/customer/CustomerOrdersPage";
+import CustomerProfilePage from "@/pages/customer/CustomerProfilePage";
 
 const routes = [
 	{
@@ -50,6 +54,22 @@ const routes = [
 	{
 		path: "/admin/settings",
 		element: <SettingsPage />,
+	},
+	{
+		path: "/customer/cart",
+		element: <CustomerCartPage />,
+	},
+	{
+		path: "/customer/menu",
+		element: <CustomerMenuPage />,
+	},
+	{
+		path: "/customer/orders",
+		element: <CustomerOrdersPage />,
+	},
+	{
+		path: "/customer/profile",
+		element: <CustomerProfilePage />,
 	},
 	{
 		path: "*",

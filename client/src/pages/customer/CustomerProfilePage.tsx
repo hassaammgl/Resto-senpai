@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/store/auth";
 
-const CustomerProfile = () => {
+const CustomerProfilePage = () => {
 	const { user } = useAuth();
 
 	return (
@@ -96,4 +96,4 @@ const CustomerProfile = () => {
 	);
 };
 
-export default CustomerProfile;
+export default CustomerProfilePage;

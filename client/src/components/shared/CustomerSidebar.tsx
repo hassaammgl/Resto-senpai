@@ -13,7 +13,7 @@ const CustomerSidebar = () => {
 	// const cartItemCount = getItemCount();
 
 	const menuItems = [
-		{ icon: Home, label: "Browse Menu", path: "/customer" },
+		{ icon: Home, label: "Browse Menu", path: "/customer/menu" },
 		{
 			icon: ShoppingCart,
 			label: "Cart",
