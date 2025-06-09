@@ -5,10 +5,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useUser } from '@/contexts/UserContext';
+import RegistrationForm from './RegistrationForm';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showRegistration, setShowRegistration] = useState(false);
   const { login } = useUser();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -27,6 +29,10 @@ const LoginForm = () => {
     setPassword('customer123');
     login('customer@example.com', 'customer123');
   };
+
+  if (showRegistration) {
+    return <RegistrationForm onBackToLogin={() => setShowRegistration(false)} />;
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
@@ -84,6 +90,18 @@ const LoginForm = () => {
                 Customer Demo
               </Button>
             </div>
+          </div>
+
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600">
+              Don't have an account?{' '}
+              <button
+                onClick={() => setShowRegistration(true)}
+                className="text-amber-600 hover:text-amber-700 font-medium"
+              >
+                Create one here
+              </button>
+            </p>
           </div>
         </CardContent>
       </Card>
