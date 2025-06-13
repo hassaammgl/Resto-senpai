@@ -39,7 +39,7 @@ export const useAuth = create<AuthState>()(
 						}
 					);
 
-					set({ user: data.data.user, isAuthenticated: true });
+					set({ user: data.data, isAuthenticated: true });
 				} catch (err: any) {
 					const errorMessage = getErrorMessage(err);
 					set({ error: errorMessage });
@@ -61,7 +61,7 @@ export const useAuth = create<AuthState>()(
 						}
 					);
 
-					set({ user: data.data.user, isAuthenticated: true });
+					set({ user: data.data, isAuthenticated: true });
 				} catch (err: any) {
 					const errorMessage = getErrorMessage(err);
 					set({ error: errorMessage });

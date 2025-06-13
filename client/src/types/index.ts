@@ -11,7 +11,7 @@ type AuthUser = {
 	role: string;
 	phone: string;
 	loyaltyPoints?: string;
-	address: {
+	address?: {
 		street: string;
 		city: string;
 		zipCode: string;

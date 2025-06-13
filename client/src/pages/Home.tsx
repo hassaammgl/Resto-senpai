@@ -13,7 +13,7 @@ const Home = () => {
 			navigate("/login");
 		} else if (user?.role === "admin") {
 			navigate("/admin/dashboard");
-		} else {
+		} else if (user?.role === "user") {
 			navigate("/customer/menu");
 		}
 	}, []);
@@ -22,11 +22,3 @@ const Home = () => {
 };
 
 export default Home;
-
-/**
- * 
- * "name": "ratthedead",
-	"email": "abc@xyz.com",
-	"password": "En61n33r_8844",
-	"role": "admin"
- */
