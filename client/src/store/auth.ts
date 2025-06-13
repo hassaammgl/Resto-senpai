@@ -24,7 +24,7 @@ export const useAuth = create<AuthState>()(
 			isLoading: false,
 			error: null,
 
-			signup: async (email, password, name) => {
+			signup: async (email, name, password, phone, role) => {
 				try {
 					set({ isLoading: true, error: null });
 
@@ -34,6 +34,8 @@ export const useAuth = create<AuthState>()(
 							email,
 							password,
 							name,
+							phone,
+							role,
 						}
 					);
 

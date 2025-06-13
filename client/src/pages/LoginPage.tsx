@@ -50,14 +50,14 @@ const LoginPage = () => {
 				console.table(formData);
 				const { email, password } = formData;
 				await login(email, password);
-				success("Account created successfully! 🎉");
-				navigate("/home");
+				success("Account login successfully! 🎉");
+				navigate("/");
 			} catch (err) {
 				const message =
 					(err as AxiosError<{ message?: string }>)?.response?.data
 						?.message ??
 					(err as Error)?.message ??
-					"Signup failed 😵";
+					"Login Failed failed 😵";
 				error(message);
 			}
 		}
@@ -71,8 +71,8 @@ const LoginPage = () => {
 	};
 
 	return (
-		<div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-			<div className="fixed top-6 right-6">
+		<div className="min-h-screen dark:bg-black bg-gray-50 flex items-center justify-center p-4">
+			<div className="fixed top-6 right-6 br-test">
 				<ModeToggle />
 			</div>
 			<Card className="w-full max-w-md">
@@ -130,7 +130,7 @@ const LoginPage = () => {
 						</div>
 						<Button
 							type="submit"
-							className="w-full bg-amber-600 hover:bg-amber-700"
+							className="w-full dark:text-amber-50 bg-amber-600 hover:bg-amber-700"
 						>
 							Login
 						</Button>
@@ -141,7 +141,7 @@ const LoginPage = () => {
 							Don't have an account?{" "}
 							<NavLink
 								to={"/signup"}
-								className="text-amber-600 hover:text-amber-700 font-medium"
+								className=" text-amber-600 hover:text-amber-700 font-medium"
 							>
 								Register
 							</NavLink>

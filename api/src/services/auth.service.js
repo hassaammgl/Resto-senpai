@@ -23,14 +23,14 @@ export class AuthService {
     }
 
     static async register(data) {
-        const { email, role, name, password } = data;
+        const { email, role, name, password, phone } = data;
 
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             throw new AppError("Email already in use", 400);
         }
 
-        const user = new User({ email, password, name, role });
+        const user = new User({ email, password, name, role, phone });
         await user.save();
 
         const tokens = await this.#generateAuthTokens(user);
@@ -66,6 +66,8 @@ export class AuthService {
         }
 
         const tokens = await this.#generateAuthTokens(user);
+        console.log(user);
+
         return {
             ...tokens,
             user: DTO.userDto(user),

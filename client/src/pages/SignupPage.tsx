@@ -75,9 +75,9 @@ const SignupPage = () => {
 			try {
 				console.table(formData);
 				const { email, name, password, phone, role } = formData;
-				await signup(name, email, phone, role, password);
+				await signup(email, name, password, phone, role);
 				success("Account created successfully! 🎉");
-				navigate("/home");
+				navigate("/");
 			} catch (err) {
 				const message =
 					(err as AxiosError<{ message?: string }>)?.response?.data
@@ -97,7 +97,7 @@ const SignupPage = () => {
 	};
 
 	return (
-		<div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
+		<div className="min-h-screen bg-gray-50  dark:bg-black flex items-center justify-center p-4">
 			<div className="fixed top-6 right-6">
 				<ModeToggle />
 			</div>
@@ -174,7 +174,7 @@ const SignupPage = () => {
 							<Label htmlFor="role">Account Type</Label>
 							<Select
 								value={formData.role}
-								onValueChange={(value: "customer" | "admin") =>
+								onValueChange={(value: "user" | "admin") =>
 									handleInputChange("role", value)
 								}
 							>
@@ -182,7 +182,7 @@ const SignupPage = () => {
 									<SelectValue placeholder="Select account type" />
 								</SelectTrigger>
 								<SelectContent>
-									<SelectItem value="customer">
+									<SelectItem value="user">
 										Customer
 									</SelectItem>
 									<SelectItem value="admin">
@@ -246,7 +246,7 @@ const SignupPage = () => {
 
 						<Button
 							type="submit"
-							className="w-full bg-amber-600 hover:bg-amber-700"
+							className="w-full bg-amber-600 hover:bg-amber-700 dark:text-amber-50"
 						>
 							Create Account
 						</Button>
