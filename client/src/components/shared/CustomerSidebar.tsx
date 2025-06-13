@@ -1,16 +1,17 @@
 import { Home, ClipboardList, User, ChefHat, ShoppingCart } from "lucide-react";
-import { NavLink as Link, useLocation } from "react-router";
+import { NavLink as Link, useLocation, useNavigate } from "react-router";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/store/auth";
-// import { useCart } from "@/contexts/CartContext";
 import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/useToast";
+import { AxiosError } from "axios";
 
 const CustomerSidebar = () => {
 	const location = useLocation();
 	const { logout } = useAuth();
-	// const { getItemCount } = useCart();
+	const { success, error } = useToast();
 
-	// const cartItemCount = getItemCount();
+	const navigate = useNavigate();
 
 	const menuItems = [
 		{ icon: Home, label: "Browse Menu", path: "/customer/menu" },
@@ -18,12 +19,27 @@ const CustomerSidebar = () => {
 			icon: ShoppingCart,
 			label: "Cart",
 			path: "/customer/cart",
-			// badge: cartItemCount > 0 ? cartItemCount : undefined,
-			badge: 0,
+			badge: 1,
 		},
 		{ icon: ClipboardList, label: "My Orders", path: "/customer/orders" },
 		{ icon: User, label: "Profile", path: "/customer/profile" },
 	];
+
+	const onClickLogout = async (e: React.FormEvent) => {
+		e.preventDefault();
+		try {
+			await logout();
+			success("Good bye! 🎉");
+			navigate("/login");
+		} catch (err) {
+			const message =
+				(err as AxiosError<{ message?: string }>)?.response?.data
+					?.message ??
+				(err as Error)?.message ??
+				"Logout Failed failed 😵";
+			error(message);
+		}
+	};
 
 	return (
 		<div className="w-64 bg-gradient-to-b from-green-900 to-green-800 text-white h-screen fixed left-0 top-0 shadow-xl">
@@ -65,7 +81,7 @@ const CustomerSidebar = () => {
 
 			<div className="absolute bottom-4 left-4 right-4">
 				<button
-					onClick={logout}
+					onClick={onClickLogout}
 					className="w-full bg-green-700 hover:bg-green-600 text-white py-2 px-4 rounded-lg transition-colors"
 				>
 					Logout

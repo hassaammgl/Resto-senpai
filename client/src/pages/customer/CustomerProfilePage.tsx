@@ -49,10 +49,7 @@ const CustomerProfilePage = () => {
 							</div>
 							<div>
 								<Label htmlFor="phone">Phone</Label>
-								<Input
-									id="phone"
-									defaultValue="+1 (555) 123-4567"
-								/>
+								<Input id="phone" defaultValue={user?.phone} />
 							</div>
 							<Button className="bg-green-600 hover:bg-green-700">
 								Save Changes
@@ -72,17 +69,26 @@ const CustomerProfilePage = () => {
 								<Label htmlFor="address">Street Address</Label>
 								<Input
 									id="address"
-									defaultValue="123 Main Street"
+									defaultValue={user?.address?.street}
+									placeholder="Kalma Chowk..."
 								/>
 							</div>
 							<div className="grid grid-cols-2 gap-4">
 								<div>
 									<Label htmlFor="city">City</Label>
-									<Input id="city" defaultValue="New York" />
+									<Input
+										id="city"
+										defaultValue={user?.address?.city}
+										placeholder="Islamabad..."
+										/>
 								</div>
 								<div>
 									<Label htmlFor="zip">ZIP Code</Label>
-									<Input id="zip" defaultValue="10001" />
+									<Input
+										id="zip"
+										defaultValue={user?.address?.zipCode}
+										placeholder="234..."
+									/>
 								</div>
 							</div>
 							<Button className="bg-green-600 hover:bg-green-700">

@@ -9,13 +9,18 @@ import {
 	Package,
 	Percent,
 } from "lucide-react";
-import { NavLink as Link, useLocation } from "react-router";
+import { NavLink as Link, useLocation, useNavigate } from "react-router";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/store/auth";
+import { useToast } from "@/hooks/useToast";
+import { AxiosError } from "axios";
 
 const Sidebar = () => {
 	const location = useLocation();
 	const { logout } = useAuth();
+	const { success, error } = useToast();
+
+	const navigate = useNavigate();
 
 	const menuItems = [
 		{ icon: Home, label: "Dashboard", path: "/" },
@@ -27,6 +32,22 @@ const Sidebar = () => {
 		{ icon: Percent, label: "Promotions", path: "/admin/promotions" },
 		{ icon: Settings, label: "Settings", path: "/admin/settings" },
 	];
+
+	const onClickLogout = async (e: React.FormEvent) => {
+		e.preventDefault();
+		try {
+			await logout();
+			success("Good bye! 🎉");
+			navigate("/login");
+		} catch (err) {
+			const message =
+				(err as AxiosError<{ message?: string }>)?.response?.data
+					?.message ??
+				(err as Error)?.message ??
+				"Logout Failed failed 😵";
+			error(message);
+		}
+	};
 
 	return (
 		<div className="w-64 bg-gradient-to-b from-amber-900 to-amber-800 text-white h-screen fixed left-0 top-0 shadow-xl">
@@ -61,7 +82,7 @@ const Sidebar = () => {
 
 			<div className="absolute bottom-4 left-4 right-4">
 				<button
-					onClick={logout}
+					onClick={onClickLogout}
 					className="w-full flex items-center gap-3 px-4 py-3 rounded-lg bg-amber-700 hover:bg-amber-600 transition-colors"
 				>
 					<LogOut className="h-5 w-5" />

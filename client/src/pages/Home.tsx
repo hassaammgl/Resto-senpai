@@ -1,24 +1,33 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "@/store/auth";
+import { useToast } from "@/hooks/useToast";
 
 const Home = () => {
 	const { user, isAuthenticated } = useAuth();
+	const { message } = useToast();
 	const navigate = useNavigate();
 	useEffect(() => {
-		console.log(isAuthenticated);
-		console.log(user);
-
 		if (isAuthenticated === false) {
 			navigate("/login");
 		} else if (user?.role === "admin") {
-			navigate("/admin/dashboard");
+			if (user?.address === undefined) {
+				message("kindly update your address");
+				navigate("/admin/settings");
+			} else {
+				navigate("/admin/dashboard");
+			}
 		} else if (user?.role === "user") {
-			navigate("/customer/menu");
+			if (user?.address === undefined) {
+				message("kindly update your address");
+				navigate("/customer/profile");
+			} else {
+				navigate("/customer/menu");
+			}
 		}
 	}, []);
 
-	return <div>Home</div>;
+	return <div>redirecting...</div>;
 };
 
 export default Home;

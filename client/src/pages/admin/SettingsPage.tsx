@@ -10,13 +10,16 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { useAuth } from "@/store/auth";
 
 const SettingsPage = () => {
+	const { user } = useAuth();
+
 	return (
 		<Layout>
 			<div className="space-y-8">
 				<div>
-					<h1 className="text-3xl font-bold text-gray-900 mb-2">
+					<h1 className="text-3xl font-bold dark:text-white text-gray-900 mb-2">
 						Settings
 					</h1>
 					<p className="text-gray-600">
@@ -44,24 +47,46 @@ const SettingsPage = () => {
 							</div>
 							<div>
 								<Label htmlFor="address">Address</Label>
-								<Input
-									id="address"
-									defaultValue="123 Main Street, City, State 12345"
-								/>
+								<div className="w-full flex justify-between flex-wrap">
+									<div className="flex w-full justify-between items-center gap-2">
+										<Input
+											id="city"
+											defaultValue={user?.address?.city}
+											placeholder="Lahore..."
+											className="w-1/2 my-2"
+										/>
+										<Input
+											id="state"
+											className="w-1/2 my-2"
+											defaultValue={user?.address?.state}
+											placeholder="Punjab..."
+										/>
+									</div>
+									<div className="flex w-full justify-between items-center gap-2">
+										<Input
+											id="street"
+											defaultValue={user?.address?.street}
+											className="w-1/2 my-2"
+											placeholder="Kalma Chowk..."
+										/>
+										<Input
+											id="zip code"
+											defaultValue={
+												user?.address?.zipCode
+											}
+											className="w-1/2 my-2"
+											placeholder="1234"
+										/>
+									</div>
+								</div>
 							</div>
 							<div>
 								<Label htmlFor="phone">Phone</Label>
-								<Input
-									id="phone"
-									defaultValue="+1 (555) 123-4567"
-								/>
+								<Input id="phone" defaultValue={user?.phone} />
 							</div>
 							<div>
 								<Label htmlFor="email">Email</Label>
-								<Input
-									id="email"
-									defaultValue="info@goldenfork.com"
-								/>
+								<Input id="email" defaultValue={user?.email} />
 							</div>
 							<Button className="bg-amber-600 hover:bg-amber-700">
 								Save Changes

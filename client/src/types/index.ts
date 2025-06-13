@@ -4,6 +4,13 @@ export interface AppLayoutProps {
 	children: ReactNode;
 }
 
+type UserAddress = {
+		street: string;
+		city: string;
+		zipCode: string;
+		state: string;
+	}
+
 type AuthUser = {
 	_id: string;
 	name: string;
@@ -11,12 +18,7 @@ type AuthUser = {
 	role: string;
 	phone: string;
 	loyaltyPoints?: string;
-	address?: {
-		street: string;
-		city: string;
-		zipCode: string;
-		state: string;
-	};
+	address?: UserAddress | null ;
 };
 
 export type AuthState = {
