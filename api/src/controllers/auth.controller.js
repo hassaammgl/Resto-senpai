@@ -33,3 +33,11 @@ export const logoutUser = asyncHandler(async (req, res) => {
         })
     }
 })
+
+export const userProfile = asyncHandler(async (req, res) => {
+    const { user } = AuthService.getProfile(req.user.id)
+    return ApiResponse.success(res, {
+        message: "user found successfully",
+        data: user
+    })
+})

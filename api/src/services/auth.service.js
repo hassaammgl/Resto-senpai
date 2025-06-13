@@ -77,4 +77,14 @@ export class AuthService {
         await User.findByIdAndUpdate({ _id }, { refreshToken: null })
         return true
     }
+
+    static async getProfile(_id) {
+        const user = await User.findById({ _id });
+        if (!user) {
+            throw new AppError('User not found', 404);
+        }
+        return {
+            user: DTO.userDto(user)
+        }
+    }
 }

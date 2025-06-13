@@ -42,6 +42,12 @@ const userSchema = new mongoose.Schema({
     enum: ["user", "admin"],
     default: "user",
   },
+  address: {
+    city: String,
+    province: String,
+    street: String,
+    zipCode: String,
+  }
 });
 
 

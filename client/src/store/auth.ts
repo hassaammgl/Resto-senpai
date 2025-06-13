@@ -90,7 +90,7 @@ export const useAuth = create<AuthState>()(
 					);
 
 					set({
-						user: data.data.user,
+						user: data.data,
 						isAuthenticated: true,
 					});
 				} catch (err) {
