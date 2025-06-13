@@ -5,6 +5,7 @@ import { useAuth } from "@/store/auth";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/useToast";
 import { AxiosError } from "axios";
+import { ModeToggle } from "@/components/mode-toggle";
 
 const CustomerSidebar = () => {
 	const location = useLocation();
@@ -46,9 +47,12 @@ const CustomerSidebar = () => {
 			<div className="p-6 border-b border-green-700">
 				<h1 className="text-2xl font-bold flex items-center gap-2">
 					<ChefHat className="h-8 w-8" />
-					RestaurantOS
+					Resto-Senpai
 				</h1>
-				<p className="text-green-200 text-sm mt-1">Customer Portal</p>
+				<p className="text-green-200 text-sm mt-1 flex justify-between items-center">
+					Customer Portal
+					<ModeToggle />
+				</p>
 			</div>
 
 			<nav className="mt-8 px-4">

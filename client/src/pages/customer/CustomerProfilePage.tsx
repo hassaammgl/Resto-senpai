@@ -18,10 +18,10 @@ const CustomerProfilePage = () => {
 		<CustomerLayout>
 			<div className="space-y-8">
 				<div>
-					<h1 className="text-3xl font-bold text-gray-900 mb-2">
+					<h1 className="text-3xl font-bold text-gray-900 mb-2 dark:text-white">
 						My Profile
 					</h1>
-					<p className="text-gray-600">
+					<p className="text-gray-600 dark:text-white/60">
 						Manage your account information
 					</p>
 				</div>
@@ -80,7 +80,7 @@ const CustomerProfilePage = () => {
 										id="city"
 										defaultValue={user?.address?.city}
 										placeholder="Islamabad..."
-										/>
+									/>
 								</div>
 								<div>
 									<Label htmlFor="zip">ZIP Code</Label>

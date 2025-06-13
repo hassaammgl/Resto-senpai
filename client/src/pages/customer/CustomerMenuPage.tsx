@@ -155,16 +155,16 @@ const CustomerMenuPage = () => {
 			<div className="space-y-8">
 				<div className="flex justify-between items-center">
 					<div>
-						<h1 className="text-3xl font-bold text-gray-900 mb-2">
+						<h1 className="text-3xl font-bold text-gray-900 mb-2 dark:text-white">
 							Our Menu
 						</h1>
-						<p className="text-gray-600">
+						<p className="text-gray-600 dark:text-white/60">
 							Discover our delicious offerings - Available for
 							dine-in, takeaway & delivery
 						</p>
 					</div>
 					<div className="flex items-center gap-4">
-						<div className="bg-green-50 px-4 py-2 rounded-lg">
+						<div className="bg-green-50 px-4 py-2 rounded-lg dark:text-white/60 dark:bg-black">
 							<p className="text-sm text-green-800">
 								🚚 Free delivery over $30
 							</p>
@@ -182,7 +182,7 @@ const CustomerMenuPage = () => {
 				</div>
 
 				{/* Search and Filters */}
-				<div className="bg-white p-6 rounded-lg shadow-sm border">
+				<div className="bg-white dark:bg-black p-6 rounded-lg shadow-sm border">
 					<div className="grid grid-cols-1 md:grid-cols-4 gap-4">
 						<div>
 							<Label htmlFor="search">Search Menu</Label>

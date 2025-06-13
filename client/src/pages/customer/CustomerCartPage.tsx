@@ -126,10 +126,10 @@ const CustomerCartPage = () => {
 		<CustomerLayout>
 			<div className="space-y-8">
 				<div>
-					<h1 className="text-3xl font-bold text-gray-900 mb-2">
+					<h1 className="text-3xl font-bold text-gray-900 mb-2 dark:text-white">
 						Your Order
 					</h1>
-					<p className="text-gray-600">
+					<p className="text-gray-600 dark:text-white/60">
 						Review your items and complete your order
 					</p>
 				</div>
@@ -289,16 +289,10 @@ const CustomerCartPage = () => {
 											</p>
 										</div>
 										<div className="flex items-center gap-3">
-											<div className="flex items-center gap-2 bg-gray-100 rounded-lg p-1">
+											<div className="flex items-center gap-2 dark:bg-black bg-gray-100 rounded-lg p-1">
 												<Button
 													size="sm"
 													variant="ghost"
-													// onClick={() =>
-													// 	updateQuantity(
-													// 		item.id,
-													// 		item.quantity - 1
-													// 	)
-													// }
 													className="h-8 w-8 p-0"
 												>
 													<Minus className="h-4 w-4" />
@@ -309,12 +303,6 @@ const CustomerCartPage = () => {
 												<Button
 													size="sm"
 													variant="ghost"
-													// onClick={() =>
-													// 	updateQuantity(
-													// 		item.id,
-													// 		item.quantity + 1
-													// 	)
-													// }
 													className="h-8 w-8 p-0"
 												>
 													<Plus className="h-4 w-4" />
@@ -332,9 +320,6 @@ const CustomerCartPage = () => {
 											<Button
 												size="sm"
 												variant="ghost"
-												// onClick={() =>
-												// 	removeItem(item.id)
-												// }
 												className="text-red-600 hover:text-red-700 h-8 w-8 p-0"
 											>
 												<Trash2 className="h-4 w-4" />

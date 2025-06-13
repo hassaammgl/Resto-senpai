@@ -7,7 +7,7 @@ interface CustomerLayoutProps {
 
 const CustomerLayout = ({ children }: CustomerLayoutProps) => {
 	return (
-		<div className="min-h-screen bg-gray-50">
+		<div className="min-h-screen bg-gray-50 dark:bg-black">
 			<CustomerSidebar />
 			<main className="ml-64 p-8">{children}</main>
 		</div>

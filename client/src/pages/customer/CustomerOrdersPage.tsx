@@ -70,10 +70,10 @@ const CustomerOrdersPage = () => {
 		<CustomerLayout>
 			<div className="space-y-8">
 				<div>
-					<h1 className="text-3xl font-bold text-gray-900 mb-2">
+					<h1 className="text-3xl font-bold text-gray-900 mb-2 dark:text-white">
 						My Orders
 					</h1>
-					<p className="text-gray-600">
+					<p className="text-gray-600 dark:text-white/60">
 						Track your order history and current orders
 					</p>
 				</div>
