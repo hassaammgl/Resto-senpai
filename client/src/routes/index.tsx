@@ -13,11 +13,12 @@ import CustomerCartPage from "@/pages/customer/CustomerCartPage";
 import CustomerMenuPage from "@/pages/customer/CustomerMenuPage";
 import CustomerOrdersPage from "@/pages/customer/CustomerOrdersPage";
 import CustomerProfilePage from "@/pages/customer/CustomerProfilePage";
+import Home from "@/pages/Home";
 
 const routes = [
 	{
 		path: "/",
-		element: <Dashboard />,
+		element: <Home />,
 	},
 	{
 		path: "/login",
@@ -26,6 +27,10 @@ const routes = [
 	{
 		path: "/signup",
 		element: <SignupPage />,
+	},
+	{
+		path: "/admin/dashboard",
+		element: <Dashboard />,
 	},
 	{
 		path: "/admin/orders",
