@@ -51,15 +51,15 @@ const TablesPage = () => {
 			<div className="space-y-8">
 				<div className="flex justify-between items-center">
 					<div>
-						<h1 className="text-3xl font-bold text-gray-900 mb-2">
+						<h1 className="text-3xl font-bold text-gray-900 mb-2 dark:text-white">
 							Table Management
 						</h1>
-						<p className="text-gray-600">
+						<p className="text-gray-600 dark:text-white/70">
 							Monitor and manage your restaurant tables in
 							real-time.
 						</p>
 					</div>
-					<Button className="bg-amber-600 hover:bg-amber-700">
+					<Button className="bg-amber-600 hover:bg-amber-700 dark:text-white">
 						<Plus className="h-4 w-4 mr-2" />
 						Add Table
 					</Button>

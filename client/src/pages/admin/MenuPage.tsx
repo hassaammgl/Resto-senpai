@@ -68,10 +68,10 @@ const MenuPage = () => {
 			<div className="space-y-8">
 				<div className="flex justify-between items-center">
 					<div>
-						<h1 className="text-3xl font-bold text-gray-900 mb-2">
+						<h1 className="text-3xl font-bold text-gray-900 mb-2 dark:text-white">
 							Menu Management
 						</h1>
-						<p className="text-gray-600">
+						<p className="text-gray-600 dark:text-white/70">
 							Manage your restaurant's menu items and pricing.
 						</p>
 					</div>
@@ -93,7 +93,7 @@ const MenuPage = () => {
 					{menuItems.map((item) => (
 						<div
 							key={item.id}
-							className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow"
+							className="bg-white dark:bg-black border-accent rounded-lg shadow-md border overflow-hidden hover:shadow-lg transition-shadow"
 						>
 							<div className="p-6">
 								<div className="flex justify-between items-start mb-4">
@@ -118,7 +118,7 @@ const MenuPage = () => {
 									</div>
 								</div>
 
-								<h3 className="text-xl font-bold text-gray-900 mb-2">
+								<h3 className="text-xl dark:text-white/70 font-bold text-gray-900 mb-2">
 									{item.name}
 								</h3>
 								<p className="text-gray-600 text-sm mb-4">

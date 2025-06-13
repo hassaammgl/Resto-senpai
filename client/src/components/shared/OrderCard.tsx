@@ -36,11 +36,11 @@ const OrderCard = ({
 	};
 
 	return (
-		<div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border border-gray-200">
+		<div className="bg-white dark:bg-black border-accent rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow border">
 			<div className="flex justify-between items-start mb-4">
 				<div>
 					<h3 className="font-bold text-lg">Order #{id}</h3>
-					<div className="flex items-center gap-2 text-gray-600 mt-1">
+					<div className="flex items-center gap-2 text-gray-600 dark:text-white/70 mt-1">
 						<User className="h-4 w-4" />
 						<span>{customer}</span>
 						<span>• Table {tableNumber}</span>

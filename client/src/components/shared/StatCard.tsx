@@ -27,8 +27,10 @@ const StatCard = ({
 		>
 			<div className="flex items-center justify-between">
 				<div>
-					<p className="text-gray-600 text-sm font-medium">{title}</p>
-					<p className="text-3xl font-bold text-gray-900 mt-2">
+					<p className="text-gray-600 text-sm font-medium dark:text-white/70">
+						{title}
+					</p>
+					<p className="text-3xl font-bold text-gray-900 mt-2 dark:text-white">
 						{value}
 					</p>
 					{trend && (

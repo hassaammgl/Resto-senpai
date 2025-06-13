@@ -19,10 +19,8 @@ import {
 } from "@/components/ui/select";
 import { ShoppingCart, Plus, Search, Filter, Clock, Star } from "lucide-react";
 import { useState } from "react";
-// import { useCart } from "@/contexts/CartContext";
 
 const CustomerMenuPage = () => {
-	// const { addItem, getItemCount, getGrandTotal } = useCart();
 	const [searchTerm, setSearchTerm] = useState("");
 	const [selectedCategory, setSelectedCategory] = useState("all");
 	const [sortBy, setSortBy] = useState("name");
@@ -137,16 +135,8 @@ const CustomerMenuPage = () => {
 		});
 
 	const addToCart = (item: (typeof menuItems)[0]) => {
-		// addItem({
-		//   id: item.id,
-		//   name: item.name,
-		//   price: item.price
-		// });
 		console.log(item);
 	};
-
-	// const cartItemCount = getItemCount();
-	// const cartTotal = getGrandTotal();
 	const cartItemCount = 0;
 	const cartTotal = 0;
 
@@ -205,7 +195,7 @@ const CustomerMenuPage = () => {
 								value={selectedCategory}
 								onValueChange={setSelectedCategory}
 							>
-								<SelectTrigger>
+								<SelectTrigger className="w-full">
 									<SelectValue />
 								</SelectTrigger>
 								<SelectContent>
@@ -222,10 +212,10 @@ const CustomerMenuPage = () => {
 								</SelectContent>
 							</Select>
 						</div>
-						<div>
+						<div className="w-full">
 							<Label>Sort By</Label>
 							<Select value={sortBy} onValueChange={setSortBy}>
-								<SelectTrigger>
+								<SelectTrigger className="w-full">
 									<SelectValue />
 								</SelectTrigger>
 								<SelectContent>

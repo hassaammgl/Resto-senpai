@@ -5,11 +5,11 @@ export interface AppLayoutProps {
 }
 
 type UserAddress = {
-		street: string;
-		city: string;
-		zipCode: string;
-		state: string;
-	}
+	street: string;
+	city: string;
+	zipCode: string;
+	state: string;
+};
 
 type AuthUser = {
 	_id: string;
@@ -18,7 +18,7 @@ type AuthUser = {
 	role: string;
 	phone: string;
 	loyaltyPoints?: string;
-	address?: UserAddress | null ;
+	address?: UserAddress | null;
 };
 
 export type AuthState = {
@@ -38,3 +38,9 @@ export type AuthState = {
 	checkIsAuthenticated: () => Promise<void>;
 	clearError: () => void;
 };
+
+export interface CartState {
+	cart: null;
+	error: string | null;
+	clearError: () => void;
+}

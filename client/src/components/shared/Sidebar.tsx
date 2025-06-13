@@ -24,7 +24,7 @@ const Sidebar = () => {
 	const navigate = useNavigate();
 
 	const menuItems = [
-		{ icon: Home, label: "Dashboard", path: "/" },
+		{ icon: Home, label: "Dashboard", path: "/admin/dashboard" },
 		{ icon: ClipboardList, label: "Orders", path: "/admin/orders" },
 		{ icon: Menu, label: "Menu", path: "/admin/menu" },
 		{ icon: Users, label: "Tables", path: "/admin/tables" },
