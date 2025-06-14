@@ -39,8 +39,18 @@ export type AuthState = {
 	clearError: () => void;
 };
 
+interface DishData {
+	name: string;
+	description: string;
+	price: number;
+	category: string;
+	image: string;
+}
+
 export interface CartState {
 	cart: null;
+	isLoading: boolean;
 	error: string | null;
+	addDishToMenu: (data: DishData) => Promise<void>;
 	clearError: () => void;
 }

@@ -20,7 +20,9 @@ export const useAuth = create<CartState>()(
 	persist(
 		(set) => ({
 			cart: null,
+			isLoading: false,
 			error: null,
+			addDishToMenu: async (data) => {},
 			clearError: () => set({ error: null }),
 		}),
 		{
