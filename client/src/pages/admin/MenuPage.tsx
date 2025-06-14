@@ -17,65 +17,17 @@ import {
 	DialogFooter,
 } from "@/components/ui/dialog";
 import CountUp from "@/blocks/TextAnimations/CountUp/CountUp";
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from "@/components/ui/select";
+
 import ImageUploader from "@/components/shared/ImageUploader";
 
 const MenuPage = () => {
-	const { error, success } = useToast();
-
-	const [isAddItem, setIsAddItem] = useState(false);
-	const [formData, setFormData] = useState({
-		name: "",
-		description: "",
-		price: "",
-		category: "",
-		image: "",
-	});
-	const [errors, setErrors] = useState<Record<string, string>>({});
-	console.log(isAddItem);
-
-	const validateForm = () => {
-		const newErrors: Record<string, string> = {};
-		// if (!formData.email.trim()) {
-		// 	newErrors.email = "Email is required";
-		// } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-		// 	newErrors.email = "Email is invalid";
-		// }
-		// if (!formData.password) {
-		// 	newErrors.password = "Password is required";
-		// } else if (formData.password.length < 6) {
-		// 	newErrors.password = "Password must be at least 6 characters";
-		// }
-		setErrors(newErrors);
-		return Object.keys(newErrors).length === 0;
-	};
-
-	const submitAddMenuItem = async (e: React.FormEvent) => {
-		e.preventDefault();
-		if (validateForm()) {
-			try {
-				console.table(formData);
-				// const { email, password } = formData;
-				// await login(email, password);
-				success("Item added successfully! 🎉");
-				// navigate("/");
-			} catch (err) {
-				const message =
-					(err as AxiosError<{ message?: string }>)?.response?.data
-						?.message ??
-					(err as Error)?.message ??
-					"Login Failed failed 😵";
-				error(message);
-			}
-		}
-	};
-
-	const handleInputChange = (field: string, value: string) => {
-		setFormData((prev) => ({ ...prev, [field]: value }));
-		if (errors[field]) {
-			setErrors((prev) => ({ ...prev, [field]: "" }));
-		}
-	};
-
 	return (
 		<Layout>
 			<div className="space-y-8">
@@ -88,95 +40,7 @@ const MenuPage = () => {
 							Manage your restaurant's menu items and pricing.
 						</p>
 					</div>
-
-					<Dialog>
-						<DialogTrigger>
-							<Button
-								onClick={() => setIsAddItem((prev) => !prev)}
-								className="bg-amber-600 text-white hover:bg-amber-700"
-							>
-								<Plus className="size-4 " />
-								Add Menu Item
-							</Button>
-						</DialogTrigger>
-						<DialogContent>
-							<DialogHeader>
-								<DialogTitle>Add Dishes</DialogTitle>
-								<DialogDescription>
-									Add your dishes for menu..
-								</DialogDescription>
-							</DialogHeader>
-							<form
-								onSubmit={submitAddMenuItem}
-								className="space-y-4"
-							>
-								<div>
-									<Label htmlFor="name" className="mb-2">
-										Name:
-									</Label>
-									<Input
-										id="name"
-										type="text"
-										value={formData.name}
-										onChange={(e) =>
-											handleInputChange(
-												"name",
-												e.target.value
-											)
-										}
-										placeholder="Enter your dish name."
-										className={
-											errors.name ? "border-red-500" : ""
-										}
-									/>
-									{errors.name && (
-										<p className="text-red-500 text-sm mt-1">
-											{errors.name}
-										</p>
-									)}
-								</div>
-								{/* <ImageUploader /> */}
-								<div>
-									<Label
-										htmlFor="description"
-										className="mb-2"
-									>
-										Description:
-									</Label>
-									<Input
-										id="description"
-										type="text"
-										value={formData.description}
-										onChange={(e) =>
-											handleInputChange(
-												"description",
-												e.target.value
-											)
-										}
-										placeholder="Enter your dish description."
-										className={
-											errors.description
-												? "border-red-500"
-												: ""
-										}
-									/>
-									{errors.description && (
-										<p className="text-red-500 text-sm mt-1">
-											{errors.description}
-										</p>
-									)}
-								</div>
-								<DialogFooter>
-									<Button
-										type="submit"
-										className="w-full dark:text-amber-50 bg-amber-600 hover:bg-amber-700"
-									>
-										Add Item
-									</Button>
-								</DialogFooter>
-							</form>
-						</DialogContent>
-					</Dialog>
+					<AddDishForm />
 				</div>
 				<div className="flex gap-2 flex-wrap">
 					{categories.map((category) => (
@@ -253,6 +117,190 @@ const MenuPage = () => {
 };
 
 export default MenuPage;
+
+const AddDishForm = () => {
+	const { error, success } = useToast();
+	const [isAddItem, setIsAddItem] = useState(false);
+	const [formData, setFormData] = useState({
+		name: "",
+		description: "",
+		price: "",
+		category: "",
+		image: "",
+	});
+	const [errors, setErrors] = useState<Record<string, string>>({});
+	console.log(isAddItem);
+
+	const validateForm = () => {
+		const newErrors: Record<string, string> = {};
+		// if (!formData.email.trim()) {
+		// 	newErrors.email = "Email is required";
+		// } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+		// 	newErrors.email = "Email is invalid";
+		// }
+		// if (!formData.password) {
+		// 	newErrors.password = "Password is required";
+		// } else if (formData.password.length < 6) {
+		// 	newErrors.password = "Password must be at least 6 characters";
+		// }
+		setErrors(newErrors);
+		return Object.keys(newErrors).length === 0;
+	};
+
+	const submitAddMenuItem = async (e: React.FormEvent) => {
+		e.preventDefault();
+		if (validateForm()) {
+			try {
+				console.table(formData);
+				// const { email, password } = formData;
+				// await login(email, password);
+				success("Item added successfully! 🎉");
+				// navigate("/");
+			} catch (err) {
+				const message =
+					(err as AxiosError<{ message?: string }>)?.response?.data
+						?.message ??
+					(err as Error)?.message ??
+					"Login Failed failed 😵";
+				error(message);
+			}
+		}
+	};
+
+	const handleInputChange = (field: string, value: string) => {
+		setFormData((prev) => ({ ...prev, [field]: value }));
+		if (errors[field]) {
+			setErrors((prev) => ({ ...prev, [field]: "" }));
+		}
+	};
+	return (
+		<Dialog>
+			<DialogTrigger>
+				<Button
+					onClick={() => setIsAddItem((prev) => !prev)}
+					className="bg-amber-600 text-white hover:bg-amber-700"
+				>
+					<Plus className="size-4 " />
+					Add Menu Item
+				</Button>
+			</DialogTrigger>
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle>Add Dishes</DialogTitle>
+					<DialogDescription>
+						Add your dishes for menu..
+					</DialogDescription>
+				</DialogHeader>
+				<form onSubmit={submitAddMenuItem} className="space-y-4">
+					<div>
+						<Label htmlFor="name" className="mb-2">
+							Name:
+						</Label>
+						<Input
+							id="name"
+							type="text"
+							value={formData.name}
+							onChange={(e) =>
+								handleInputChange("name", e.target.value)
+							}
+							placeholder="Enter your dish name."
+							className={errors.name ? "border-red-500" : ""}
+						/>
+						{errors.name && (
+							<p className="text-red-500 text-sm mt-1">
+								{errors.name}
+							</p>
+						)}
+					</div>
+					{/* <ImageUploader /> */}
+					<div>
+						<Label htmlFor="description" className="mb-2">
+							Description:
+						</Label>
+						<Input
+							id="description"
+							type="text"
+							value={formData.description}
+							onChange={(e) =>
+								handleInputChange("description", e.target.value)
+							}
+							placeholder="Enter your dish description."
+							className={
+								errors.description ? "border-red-500" : ""
+							}
+						/>
+						{errors.description && (
+							<p className="text-red-500 text-sm mt-1">
+								{errors.description}
+							</p>
+						)}
+					</div>
+					<div>
+						<Label htmlFor="price" className="mb-2">
+							Price:
+						</Label>
+						<Input
+							id="price"
+							type="number"
+							value={formData.price}
+							onChange={(e) =>
+								handleInputChange("price", e.target.value)
+							}
+							placeholder="Enter your dish price."
+							className={errors.price ? "border-red-500" : ""}
+						/>
+						{errors.price && (
+							<p className="text-red-500 text-sm mt-1">
+								{errors.price}
+							</p>
+						)}
+					</div>
+					<div>
+						<Label htmlFor="category" className="mb-2">
+							Category:
+						</Label>
+						<Select
+							value={formData.category}
+							onValueChange={(e) =>
+								handleInputChange("category", e)
+							}
+						>
+							<SelectTrigger className="w-full">
+								<SelectValue placeholder="Category" />
+							</SelectTrigger>
+							<SelectContent>
+								{[
+									"Appetizer",
+									"Main Course",
+									"Side",
+									"Dessert",
+								].map((c, i) => (
+									<SelectItem key={i} value={c.toLowerCase()}>
+										{c}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+						{errors.price && (
+							<p className="text-red-500 text-sm mt-1">
+								{errors.price}
+							</p>
+						)}
+					</div>
+					<ImageUploader />
+					<DialogFooter>
+						<Button
+							type="submit"
+							className="w-full dark:text-amber-50 bg-amber-600 hover:bg-amber-700"
+						>
+							Add Item
+						</Button>
+					</DialogFooter>
+				</form>
+			</DialogContent>
+		</Dialog>
+	);
+};
 
 const categories = ["All", "Appetizer", "Main Course", "Side", "Dessert"];
 const menuItems = [

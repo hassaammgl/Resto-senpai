@@ -28,9 +28,9 @@ const routes = [
 	{
 		path: "/",
 		element: (
-			<AuthGuard>
-				<Home />
-			</AuthGuard>
+			// <AuthGuard>
+			<Home />
+			// </AuthGuard>
 		),
 	},
 	{
