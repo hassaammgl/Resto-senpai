@@ -47,8 +47,8 @@ interface DishData {
 	image: string;
 }
 
-export interface CartState {
-	cart: null;
+export interface MenuState {
+	menuItems: DishData[];
 	isLoading: boolean;
 	error: string | null;
 	addDishToMenu: (data: DishData) => Promise<void>;

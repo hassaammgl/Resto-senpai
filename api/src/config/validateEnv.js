@@ -7,6 +7,9 @@ export const validateEnv = () => {
         { key: "JWT_REFRESH_SECRET", required: true },
         { key: "FRONTEND_URL", required: true },
         { key: "NODE_ENV", default: "development" },
+        { key: "CLOUDINARY_CLOUD_NAME", required: true },
+        { key: "CLOUDINARY_API_KEY", required: true },
+        { key: "CLOUDINARY_API_SECRET", required: true },
     ];
     const missingEnvs = []
     const warnings = []

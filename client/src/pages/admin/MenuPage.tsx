@@ -17,12 +17,15 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Plus, Edit, Trash2 } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/useToast";
+import { useMenu } from "@/store/menu";
+import { AxiosError } from "axios";
+// import { useNavigate } from "react-router";
 
 const Menu = () => {
-	const [menuItems, setMenuItems] = useState([
+	const menuItems = [
 		{
 			id: 1,
 			name: "Grilled Salmon",
@@ -41,12 +44,14 @@ const Menu = () => {
 			image: "",
 			available: true,
 		},
-	]);
+	];
 
 	const categories = ["Appetizer", "Main Course", "Side", "Dessert"];
 	const allCategories = ["All", ...categories];
 
-	const { error } = useToast();
+	const { addDishToMenu, isLoading } = useMenu();
+	const { error, success } = useToast();
+	// const navigate = useNavigate();
 
 	const [newItem, setNewItem] = useState({
 		name: "",
@@ -81,7 +86,8 @@ const Menu = () => {
 		}
 	};
 
-	const handleAddItem = () => {
+	const handleAddItem = async (e: React.FormEvent) => {
+		e.preventDefault();
 		if (
 			!newItem.name ||
 			!newItem.price ||
@@ -94,20 +100,28 @@ const Menu = () => {
 
 		const newMenuItem = {
 			...newItem,
-			id: Date.now(),
 			price: parseFloat(newItem.price),
 		};
-
-		console.log(newMenuItem);
-
-		setNewItem({
-			name: "",
-			description: "",
-			price: "",
-			category: "",
-			image: "",
-		});
-		setImagePreview(null);
+		try {
+			console.table(newMenuItem);
+			await addDishToMenu(newMenuItem);
+			success("Item added successfully! 🎉");
+		} catch (err) {
+			const message =
+				(err as AxiosError<{ message?: string }>)?.response?.data
+					?.message ??
+				(err as Error)?.message ??
+				"Failed to add item 😵";
+			error(message);
+		}
+		// setNewItem({
+		// 	name: "",
+		// 	description: "",
+		// 	price: "",
+		// 	category: "",
+		// 	image: "",
+		// });
+		// setImagePreview(null);
 	};
 
 	return (
@@ -136,7 +150,7 @@ const Menu = () => {
 									Add New Menu Item
 								</DialogTitle>
 							</DialogHeader>
-							<div className="space-y-4">
+							<form className="space-y-4">
 								<div className="space-y-2">
 									<Label htmlFor="name">Item Name</Label>
 									<Input
@@ -225,7 +239,7 @@ const Menu = () => {
 								>
 									Add Item
 								</Button>
-							</div>
+							</form>
 						</DialogContent>
 					</Dialog>
 				</div>
@@ -238,67 +252,71 @@ const Menu = () => {
 					))}
 				</div>
 
-				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-					{menuItems.map((item) => (
-						<div
-							key={item.id}
-							className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow"
-						>
-							{item.image && (
-								<img
-									src={item.image}
-									alt={item.name}
-									className="w-full h-40 object-cover"
-								/>
-							)}
-							<div className="p-6">
-								<div className="flex justify-between items-start mb-4">
-									<div className="flex gap-2">
-										<Badge
-											variant={
-												item.available
-													? "default"
-													: "secondary"
-											}
-										>
-											{item.available
-												? "Available"
-												: "Out of Stock"}
-										</Badge>
-										<Badge variant="outline">
-											{item.category}
-										</Badge>
+				{isLoading ? (
+					"Loading..."
+				) : (
+					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+						{menuItems.map((item) => (
+							<div
+								key={item.id}
+								className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow"
+							>
+								{item.image && (
+									<img
+										src={item.image}
+										alt={item.name}
+										className="w-full h-40 object-cover"
+									/>
+								)}
+								<div className="p-6">
+									<div className="flex justify-between items-start mb-4">
+										<div className="flex gap-2">
+											<Badge
+												variant={
+													item.available
+														? "default"
+														: "secondary"
+												}
+											>
+												{item.available
+													? "Available"
+													: "Out of Stock"}
+											</Badge>
+											<Badge variant="outline">
+												{item.category}
+											</Badge>
+										</div>
 									</div>
-								</div>
 
-								<h3 className="text-xl font-bold text-gray-900 mb-2">
-									{item.name}
-								</h3>
-								<p className="text-gray-600 text-sm mb-4">
-									{item.description}
-								</p>
+									<h3 className="text-xl font-bold text-gray-900 mb-2">
+										{item.name}
+									</h3>
+									<p className="text-gray-600 text-sm mb-4">
+										{item.description}
+									</p>
 
-								<div className="flex justify-between items-center">
-									<span className="text-2xl font-bold text-amber-600">
-										${item.price}
-									</span>
-									<div className="flex gap-2">
-										<Button size="sm" variant="outline">
-											<Edit className="h-4 w-4" />
-										</Button>
-										<Button
-											size="sm"
-											variant="outline"
-											className="text-red-600 hover:text-red-700"
-										>
-											<Trash2 className="h-4 w-4" />
-										</Button>
+									<div className="flex justify-between items-center">
+										<span className="text-2xl font-bold text-amber-600">
+											${item.price}
+										</span>
+										<div className="flex gap-2">
+											<Button size="sm" variant="outline">
+												<Edit className="h-4 w-4" />
+											</Button>
+											<Button
+												size="sm"
+												variant="outline"
+												className="text-red-600 hover:text-red-700"
+											>
+												<Trash2 className="h-4 w-4" />
+											</Button>
+										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-					))}
-				</div>
+						))}
+					</div>
+				)}
 			</div>
 		</Layout>
 	);
