@@ -92,7 +92,7 @@ const MenuPage = () => {
 
 								<div className="flex  justify-between items-center">
 									<span className="text-2xl mix-blend-difference font-bold text-amber-600">
-										pkr <CountUp from={0} to={item.price} />
+										Rs. <CountUp from={0} to={item.price} />
 									</span>
 									<div className="flex gap-2">
 										<Button size="sm" variant="outline">
@@ -126,23 +126,25 @@ const AddDishForm = () => {
 		description: "",
 		price: "",
 		category: "",
-		image: "",
 	});
+	const [uploadImg, setUploadImg] = useState(false);
 	const [errors, setErrors] = useState<Record<string, string>>({});
 	console.log(isAddItem);
 
 	const validateForm = () => {
 		const newErrors: Record<string, string> = {};
-		// if (!formData.email.trim()) {
-		// 	newErrors.email = "Email is required";
-		// } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-		// 	newErrors.email = "Email is invalid";
-		// }
-		// if (!formData.password) {
-		// 	newErrors.password = "Password is required";
-		// } else if (formData.password.length < 6) {
-		// 	newErrors.password = "Password must be at least 6 characters";
-		// }
+		if (!formData.name.trim()) {
+			newErrors.name = "Name is required";
+		}
+		if (!formData.description) {
+			newErrors.description = "Description is required";
+		}
+		if (!formData.price) {
+			newErrors.price = "Price is required";
+		}
+		if (!formData.category) {
+			newErrors.category = "Category is required";
+		}
 		setErrors(newErrors);
 		return Object.keys(newErrors).length === 0;
 	};
@@ -192,104 +194,129 @@ const AddDishForm = () => {
 					</DialogDescription>
 				</DialogHeader>
 				<form onSubmit={submitAddMenuItem} className="space-y-4">
-					<div>
-						<Label htmlFor="name" className="mb-2">
-							Name:
-						</Label>
-						<Input
-							id="name"
-							type="text"
-							value={formData.name}
-							onChange={(e) =>
-								handleInputChange("name", e.target.value)
-							}
-							placeholder="Enter your dish name."
-							className={errors.name ? "border-red-500" : ""}
-						/>
-						{errors.name && (
-							<p className="text-red-500 text-sm mt-1">
-								{errors.name}
-							</p>
-						)}
-					</div>
-					{/* <ImageUploader /> */}
-					<div>
-						<Label htmlFor="description" className="mb-2">
-							Description:
-						</Label>
-						<Input
-							id="description"
-							type="text"
-							value={formData.description}
-							onChange={(e) =>
-								handleInputChange("description", e.target.value)
-							}
-							placeholder="Enter your dish description."
-							className={
-								errors.description ? "border-red-500" : ""
-							}
-						/>
-						{errors.description && (
-							<p className="text-red-500 text-sm mt-1">
-								{errors.description}
-							</p>
-						)}
-					</div>
-					<div>
-						<Label htmlFor="price" className="mb-2">
-							Price:
-						</Label>
-						<Input
-							id="price"
-							type="number"
-							value={formData.price}
-							onChange={(e) =>
-								handleInputChange("price", e.target.value)
-							}
-							placeholder="Enter your dish price."
-							className={errors.price ? "border-red-500" : ""}
-						/>
-						{errors.price && (
-							<p className="text-red-500 text-sm mt-1">
-								{errors.price}
-							</p>
-						)}
-					</div>
-					<div>
-						<Label htmlFor="category" className="mb-2">
-							Category:
-						</Label>
-						<Select
-							value={formData.category}
-							onValueChange={(e) =>
-								handleInputChange("category", e)
-							}
-						>
-							<SelectTrigger className="w-full">
-								<SelectValue placeholder="Category" />
-							</SelectTrigger>
-							<SelectContent>
-								{[
-									"Appetizer",
-									"Main Course",
-									"Side",
-									"Dessert",
-								].map((c, i) => (
-									<SelectItem key={i} value={c.toLowerCase()}>
-										{c}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-						{errors.price && (
-							<p className="text-red-500 text-sm mt-1">
-								{errors.price}
-							</p>
-						)}
-					</div>
-					<ImageUploader />
+					{!uploadImg && (
+						<>
+							<div>
+								<Label htmlFor="name" className="mb-2">
+									Name:
+								</Label>
+								<Input
+									id="name"
+									type="text"
+									value={formData.name}
+									onChange={(e) =>
+										handleInputChange(
+											"name",
+											e.target.value
+										)
+									}
+									placeholder="Enter your dish name."
+									className={
+										errors.name ? "border-red-500" : ""
+									}
+								/>
+								{errors.name && (
+									<p className="text-red-500 text-sm mt-1">
+										{errors.name}
+									</p>
+								)}
+							</div>
+							<div>
+								<Label htmlFor="description" className="mb-2">
+									Description:
+								</Label>
+								<Input
+									id="description"
+									type="text"
+									value={formData.description}
+									onChange={(e) =>
+										handleInputChange(
+											"description",
+											e.target.value
+										)
+									}
+									placeholder="Enter your dish description."
+									className={
+										errors.description
+											? "border-red-500"
+											: ""
+									}
+								/>
+								{errors.description && (
+									<p className="text-red-500 text-sm mt-1">
+										{errors.description}
+									</p>
+								)}
+							</div>
+							<div>
+								<Label htmlFor="price" className="mb-2">
+									Price:
+								</Label>
+								<Input
+									id="price"
+									type="number"
+									value={formData.price}
+									onChange={(e) =>
+										handleInputChange(
+											"price",
+											e.target.value
+										)
+									}
+									placeholder="Enter your dish price."
+									className={
+										errors.price ? "border-red-500" : ""
+									}
+								/>
+								{errors.price && (
+									<p className="text-red-500 text-sm mt-1">
+										{errors.price}
+									</p>
+								)}
+							</div>
+							<div>
+								<Label htmlFor="category" className="mb-2">
+									Category:
+								</Label>
+								<Select
+									value={formData.category}
+									onValueChange={(e) =>
+										handleInputChange("category", e)
+									}
+								>
+									<SelectTrigger className="w-full">
+										<SelectValue placeholder="Category" />
+									</SelectTrigger>
+									<SelectContent>
+										{[
+											"Appetizer",
+											"Main Course",
+											"Side",
+											"Dessert",
+										].map((c, i) => (
+											<SelectItem
+												key={i}
+												value={c.toLowerCase()}
+											>
+												{c}
+											</SelectItem>
+										))}
+									</SelectContent>
+								</Select>
+								{errors.category && (
+									<p className="text-red-500 text-sm mt-1">
+										{errors.category}
+									</p>
+								)}
+							</div>
+						</>
+					)}
+					<Button onClick={() => setUploadImg((prev) => !prev)}>
+						Upload img
+					</Button>
+					{uploadImg && <ImageUploader />}
 					<DialogFooter>
 						<Button
+							disabled={!uploadImg}
 							type="submit"
 							className="w-full dark:text-amber-50 bg-amber-600 hover:bg-amber-700"
 						>

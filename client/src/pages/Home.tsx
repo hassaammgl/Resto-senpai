@@ -1,36 +1,35 @@
-import { Navigate } from "react-router";
+import { useNavigate } from "react-router";
 import { useAuth } from "@/store/auth";
 import { useToast } from "@/hooks/useToast";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 const Home = () => {
 	const { user, isAuthenticated } = useAuth();
 	const { message } = useToast();
-	const [myPath, setMyPath] = useState("/");
+	const redirect = useNavigate();
 
 	useEffect(() => {
+		if (isAuthenticated === null) return;
 		if (isAuthenticated === false) {
-			setMyPath("login");
-		} else if (user?.role === "admin") {
-			if (user?.address === undefined) {
+			redirect("/login");
+			return;
+		}
+		if (user?.role === "admin") {
+			if (!user?.address) {
 				message("kindly update your address");
-				setMyPath("/admin/settings");
+				redirect("/admin/settings");
 			} else {
-				setMyPath("/admin/dashboard");
+				redirect("/admin/dashboard");
 			}
 		} else if (user?.role === "user") {
-			if (user?.address === undefined) {
+			if (!user?.address) {
 				message("kindly update your address");
-				setMyPath("/customer/profile");
+				redirect("/customer/profile");
 			} else {
-				setMyPath("/customer/menu");
+				redirect("/customer/menu");
 			}
 		}
-	}, [isAuthenticated, user]);
-
-	if (myPath !== "/") {
-		return <Navigate to={myPath} />;
-	}
+	}, [isAuthenticated, user, message, redirect]);
 
 	return null;
 };
