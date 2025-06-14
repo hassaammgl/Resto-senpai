@@ -72,7 +72,7 @@ const LoginPage = () => {
 
 	return (
 		<div className="min-h-screen dark:bg-black bg-gray-50 flex items-center justify-center p-4">
-			<div className="fixed top-6 right-6 br-test">
+			<div className="fixed top-6 right-6 ">
 				<ModeToggle />
 			</div>
 			<Card className="w-full max-w-md">

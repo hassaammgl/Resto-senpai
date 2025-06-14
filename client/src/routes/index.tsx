@@ -18,16 +18,20 @@ import { AuthGuard } from "./AuthGuard";
 
 const routes = [
 	{
-		path: "/",
-		element: <Home />,
-	},
-	{
 		path: "/login",
 		element: <LoginPage />,
 	},
 	{
 		path: "/signup",
 		element: <SignupPage />,
+	},
+	{
+		path: "/",
+		element: (
+			<AuthGuard>
+				<Home />
+			</AuthGuard>
+		),
 	},
 	{
 		path: "/admin/dashboard",

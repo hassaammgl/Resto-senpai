@@ -5,7 +5,6 @@ import { useAuth } from "@/store/auth";
 export const AuthGuard = ({ children }: { children: React.ReactNode }) => {
 	const { isAuthenticated, checkIsAuthenticated, isLoading } = useAuth();
 	const navigate = useNavigate();
-
 	useEffect(() => {
 		checkIsAuthenticated();
 	}, [checkIsAuthenticated]);

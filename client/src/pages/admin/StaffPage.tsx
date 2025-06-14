@@ -96,7 +96,7 @@ const StaffPage = () => {
 	).length;
 	const totalPayroll = staffMembers
 		.filter((staff) => staff.status === "active")
-		.reduce((sum, staff) => sum + staff.hourlyRate * 40, 0); // Assuming 40 hours per week
+		.reduce((sum, staff) => sum + staff.hourlyRate * 40, 0);
 
 	return (
 		<Layout>
@@ -104,18 +104,18 @@ const StaffPage = () => {
 				{/* Header */}
 				<div className="flex justify-between items-center">
 					<div>
-						<h1 className="text-3xl font-bold text-gray-900">
+						<h1 className="text-3xl font-bold text-gray-900 dark:text-white">
 							Staff Management
 						</h1>
-						<p className="text-gray-600">
+						<p className="text-gray-600 dark:text-white/70">
 							Manage your restaurant staff and schedules
 						</p>
 					</div>
 					<Button
 						onClick={() => setShowRegistrationForm(true)}
-						className="bg-amber-600 hover:bg-amber-700"
+						className="bg-amber-600 hover:bg-amber-700 text-black dark:text-white"
 					>
-						<Plus className="h-4 w-4 mr-2" />
+						<Plus className="h-4 w-4 mr-2 dark:text-white" />
 						Add Staff Member
 					</Button>
 				</div>
@@ -199,33 +199,33 @@ const StaffPage = () => {
 												{staff.status.replace("-", " ")}
 											</Badge>
 										</div>
-										<div className="text-sm text-gray-600 space-y-1">
+										<div className="text-sm text-gray-600 dark:text-white/60 space-y-1">
 											<p>
-												<span className="font-medium">
+												<span className="font-bold">
 													Position:
 												</span>{" "}
 												{staff.position}
 											</p>
 											<p>
-												<span className="font-medium">
+												<span className="font-bold">
 													Email:
 												</span>{" "}
 												{staff.email}
 											</p>
 											<p>
-												<span className="font-medium">
+												<span className="font-bold">
 													Shift:
 												</span>{" "}
 												{getShiftDisplay(staff.shift)}
 											</p>
 											<p>
-												<span className="font-medium">
+												<span className="font-bold">
 													Hourly Rate:
 												</span>{" "}
 												${staff.hourlyRate.toFixed(2)}
 											</p>
 											<p>
-												<span className="font-medium">
+												<span className="font-bold">
 													Hire Date:
 												</span>{" "}
 												{new Date(

@@ -12,6 +12,7 @@
 	"license": "ISC",
 	"dependencies": {
 		"argon2": "^0.43.0",
+		"cloudinary": "^2.6.1",
 		"colors": "^1.4.0",
 		"cookie-parser": "^1.4.7",
 		"cors": "^2.8.5",
@@ -22,6 +23,7 @@
 		"joi": "^17.13.3",
 		"jsonwebtoken": "^9.0.2",
 		"mongoose": "^8.15.1",
-		"morgan": "^1.10.0"
+		"morgan": "^1.10.0",
+		"multer": "^2.0.1"
 	}
 }

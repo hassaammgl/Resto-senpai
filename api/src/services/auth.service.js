@@ -83,8 +83,10 @@ export class AuthService {
         if (!user) {
             throw new AppError('User not found', 404);
         }
+        console.log(user);
+
         return {
-            user: DTO.userDto(user)
+            user
         }
     }
 }

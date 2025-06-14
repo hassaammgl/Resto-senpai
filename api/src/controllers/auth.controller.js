@@ -35,7 +35,9 @@ export const logoutUser = asyncHandler(async (req, res) => {
 })
 
 export const userProfile = asyncHandler(async (req, res) => {
-    const { user } = AuthService.getProfile(req.user.id)
+    const { user } =await AuthService.getProfile(req.user.id)
+    console.log("the user => ",user);
+    
     return ApiResponse.success(res, {
         message: "user found successfully",
         data: user

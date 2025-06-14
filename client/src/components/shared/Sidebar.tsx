@@ -18,7 +18,7 @@ import { ModeToggle } from "@/components/mode-toggle";
 
 const Sidebar = () => {
 	const location = useLocation();
-	const { logout } = useAuth();
+	const { logout, user } = useAuth();
 	const { success, error } = useToast();
 
 	const navigate = useNavigate();
@@ -51,14 +51,17 @@ const Sidebar = () => {
 	};
 
 	return (
-		<div className="w-64 bg-gradient-to-b from-amber-900 to-amber-800 text-white h-screen fixed left-0 top-0 shadow-xl">
+		<div className="w-64 bg-gradient-to-b dark:from-gray-900 dark:to-gray-800 from-amber-900 to-amber-600 text-white h-screen fixed left-0 top-0 shadow-xl">
 			<div className="p-6 border-b border-amber-700">
 				<h1 className="text-2xl font-bold flex items-center gap-2">
 					<ChefHat className="h-8 w-8" />
 					Resto-Senpai
 				</h1>
 				<p className="text-amber-200 text-sm mt-1 flex justify-between items-center">
-					Admin Dashboard
+					<span>
+						{user?.name}
+						<sup className="font-bold">(Admin)</sup>
+					</span>
 					<ModeToggle />
 				</p>
 			</div>

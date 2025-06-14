@@ -11,9 +11,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useAuth } from "@/store/auth";
+import { useEffect } from "react";
 
 const SettingsPage = () => {
 	const { user } = useAuth();
+	useEffect(() => {
+		console.log(user);
+	}, []);
 
 	return (
 		<Layout>

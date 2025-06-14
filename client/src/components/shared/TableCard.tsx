@@ -19,13 +19,13 @@ const TableCard = ({
 	const getStatusColor = (status: string) => {
 		switch (status) {
 			case "available":
-				return "bg-green-50 border-green-200 text-green-800";
+				return "bg-green-50 border-accent text-green-800 dark:text-green-400 dark:bg-green-900  ";
 			case "occupied":
-				return "bg-red-50 border-red-200 text-red-800";
+				return "bg-red-50 border-accent text-red-800 dark:text-red-400 dark:bg-red-900";
 			case "reserved":
-				return "bg-yellow-50 border-yellow-200 text-yellow-800";
+				return "bg-yellow-50 border-accent dark:text-yellow-400 text-yellow-800 dark:bg-yellow-900";
 			default:
-				return "bg-gray-50 border-gray-200 text-gray-800";
+				return "bg-gray-50 border-accent text-gray-800 dark:text-gray-400 dark:bg-gray-900";
 		}
 	};
 
