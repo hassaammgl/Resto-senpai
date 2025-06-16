@@ -39,12 +39,15 @@ export type AuthState = {
 	clearError: () => void;
 };
 
-interface DishData {
+export interface DishData {
+	_id?: string;
 	name: string;
 	description: string;
 	price: number;
 	category: string;
 	image: string;
+	available?: boolean;
+	quantity?: number;
 }
 
 export interface MenuState {
@@ -52,5 +55,7 @@ export interface MenuState {
 	isLoading: boolean;
 	error: string | null;
 	addDishToMenu: (data: DishData) => Promise<void>;
+	updateDishDetails: (data: DishData) => Promise<void>;
+	getAllDishes: () => Promise<void>;
 	clearError: () => void;
 }

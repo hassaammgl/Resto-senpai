@@ -21,7 +21,14 @@ const dishSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    
+    available: {
+        type: Boolean,
+        default: true,
+    },
+    quantity: {
+        type: Number,
+        default: 0
+    }
 });
 
 const Dish = mongoose.model("Dish", dishSchema);

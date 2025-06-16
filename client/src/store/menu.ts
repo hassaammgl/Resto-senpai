@@ -33,7 +33,41 @@ export const useMenu = create<MenuState>()(
 						}
 					);
 
-					// set({ user: data.data, isAuthenticated: true });
+					set({ menuItems: [...data.data] });
+				} catch (err: any) {
+					const errorMessage = getErrorMessage(err);
+					set({ error: errorMessage });
+					throw new Error(errorMessage);
+				} finally {
+					set({ isLoading: false });
+				}
+			},
+			getAllDishes: async () => {
+				try {
+					set({ isLoading: true, error: null });
+					const { data } = await axiosInstance.get(
+						"/api/menu/get-all-dishes"
+					);
+					set({ menuItems: [...data.data] });
+				} catch (err: any) {
+					const errorMessage = getErrorMessage(err);
+					set({ error: errorMessage });
+					throw new Error(errorMessage);
+				} finally {
+					set({ isLoading: false });
+				}
+			},
+			updateDishDetails: async (itemdata) => {
+				try {
+					set({ isLoading: true, error: null });
+
+					const { data } = await axiosInstance.post(
+						"/api/menu/update-dish",
+						{
+							...itemdata,
+						}
+					);
+					set({ menuItems: [...data.data] });
 				} catch (err: any) {
 					const errorMessage = getErrorMessage(err);
 					set({ error: errorMessage });

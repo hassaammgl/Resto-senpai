@@ -12,6 +12,22 @@ export const addDishToDb = asyncHandler(async (req, res) => {
     })
 })
 
+export const updateDishToDb = asyncHandler(async (req, res) => {
+    const { newDish } = await MenuService.updateDishItem(req.body);
+    console.log(newDish);
+    return ApiResponse.success(res, {
+        statusCode: 201,
+        message: "Dish Updated Succesfully",
+        data: newDish
+    })
+})
+
 export const getAllDishes = asyncHandler(async (req, res) => {
-    await MenuService
+    const { allDishes } = await MenuService.getAllDishes()
+    console.log(allDishes);
+    return ApiResponse.success(res, {
+        statusCode: 200,
+        message: "All dishes found successfully",
+        data: allDishes
+    })
 })
