@@ -33,4 +33,11 @@ app.use("/api/menu", menuRoutes)
 // error handlers
 app.use(errorHandler)
 
+app.use((req, res, next) => {
+    res.status(404).json({
+        success: false,
+        message: "Route not found",
+    });
+});
+
 export default app;

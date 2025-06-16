@@ -8,4 +8,9 @@ export class DTO {
             phone: user.phone
         }
     }
+    static dishDto(dish) {
+        return {
+            
+        }
+    }
 }

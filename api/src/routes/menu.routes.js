@@ -7,5 +7,5 @@ import { addDishToDb } from "../controllers/menu.controller"
 const router = Router()
 
 router.post('/add-dish', protect, validateRequest(addDish), addDishToDb);
-
+router.get("/get-all-dishes",protect,)
 export default router;

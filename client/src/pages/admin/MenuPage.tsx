@@ -32,7 +32,7 @@ const Menu = () => {
 			description: "Fresh Atlantic salmon with herbs and lemon",
 			price: 28.99,
 			category: "Main Course",
-			image: "",
+			image: "https://imgs.search.brave.com/_LTX8bwhKR9iofYfiaSbsMKSB_WEFCxwDVTijXUAOfM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wNjAv/NTA0LzIzMS9zbWFs/bC9hLXNoYWRvd3kt/ZmlndXJlLWluLWEt/bmluamEtbGlrZS1v/dXRmaXQtcG9pc2Vk/LWZvci1hY3Rpb24t/YWdhaW5zdC1hLWRh/cmstYmFja2Ryb3At/cGhvdG8uanBlZw",
 			available: true,
 		},
 		{
@@ -41,7 +41,7 @@ const Menu = () => {
 			description: "Crisp romaine lettuce with parmesan and croutons",
 			price: 14.99,
 			category: "Appetizer",
-			image: "",
+			image: "https://imgs.search.brave.com/_LTX8bwhKR9iofYfiaSbsMKSB_WEFCxwDVTijXUAOfM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wNjAv/NTA0LzIzMS9zbWFs/bC9hLXNoYWRvd3kt/ZmlndXJlLWluLWEt/bmluamEtbGlrZS1v/dXRmaXQtcG9pc2Vk/LWZvci1hY3Rpb24t/YWdhaW5zdC1hLWRh/cmstYmFja2Ryb3At/cGhvdG8uanBlZw",
 			available: true,
 		},
 	];
@@ -73,17 +73,32 @@ const Menu = () => {
 
 	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
-		if (file) {
-			const reader = new FileReader();
-			reader.onloadend = () => {
-				setImagePreview(reader.result as string);
-				setNewItem((prev) => ({
-					...prev,
-					image: reader.result as string,
-				}));
-			};
-			reader.readAsDataURL(file);
+
+		if (!file) return;
+
+		if (!file.type.match("image.*")) {
+			error("Please select an image file");
+			return;
 		}
+
+		const reader = new FileReader();
+
+		reader.onloadend = () => {
+			const base64String = reader.result?.toString() as string;
+			setImagePreview(base64String);
+			console.log(base64String);
+
+			setNewItem((prev) => ({
+				...prev,
+				image: base64String,
+			}));
+		};
+
+		reader.onerror = () => {
+			console.error("Error reading file");
+		};
+
+		reader.readAsDataURL(file);
 	};
 
 	const handleAddItem = async (e: React.FormEvent) => {
@@ -92,7 +107,8 @@ const Menu = () => {
 			!newItem.name ||
 			!newItem.price ||
 			!newItem.category ||
-			!newItem.image
+			!newItem.image ||
+			!newItem.description
 		) {
 			error("Please fill in all required fields and upload an image!");
 			return;
@@ -259,13 +275,13 @@ const Menu = () => {
 						{menuItems.map((item) => (
 							<div
 								key={item.id}
-								className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden hover:shadow-lg transition-shadow"
+								className="bg-white dark:bg-black border-accent rounded-lg shadow-md border overflow-hidden hover:shadow-lg transition-shadow"
 							>
 								{item.image && (
 									<img
 										src={item.image}
 										alt={item.name}
-										className="w-full h-40 object-cover"
+										className="w-full rounded-xl h-40 object-cover"
 									/>
 								)}
 								<div className="p-6">
@@ -288,10 +304,10 @@ const Menu = () => {
 										</div>
 									</div>
 
-									<h3 className="text-xl font-bold text-gray-900 mb-2">
+									<h3 className="text-xl font-bold dark:text-white text-gray-900 mb-2">
 										{item.name}
 									</h3>
-									<p className="text-gray-600 text-sm mb-4">
+									<p className="text-gray-600 dark:text-white/70 text-sm mb-4">
 										{item.description}
 									</p>
 
