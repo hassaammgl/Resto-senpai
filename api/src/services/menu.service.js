@@ -27,14 +27,16 @@ export class MenuService {
     static async updateDishItem(data) {
         const { _id, name, description, price, category, image, quantity } = data;
         try {
-            const imgUrl = await Upload.uploadImg(image);
-            console.log(name, description, price, category, imgUrl, quantity, _id);
-            const updatedDish = await Dish.findByIdAndUpdate({ _id }, { name, description, price, category, imgUrl, quantity })
-            updatedDish.save();
-            console.log(updatedDish);
-            return {
-                updatedDish
-            }
+            const urlRegEx = /https:/g;
+            urlRegEx.test(image)
+            // const imgUrl = await Upload.uploadImg(image);
+            // console.log(name, description, price, category, imgUrl, quantity, _id);
+            // const updatedDish = await Dish.findByIdAndUpdate({ _id }, { name, description, price, category, imgUrl, quantity })
+            // updatedDish.save();
+            // console.log(updatedDish);
+            // return {
+            //     updatedDish
+            // }
         } catch (error) {
             throw new AppError(error)
         }
