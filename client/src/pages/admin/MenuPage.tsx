@@ -24,110 +24,19 @@ import { useMenu } from "@/store/menu";
 import { AxiosError } from "axios";
 import type { DishData } from "@/types/index";
 
+const categories = ["Appetizer", "Main Course", "Side", "Dessert"];
+const allCategories = ["All", ...categories];
 const Menu = () => {
-	const categories = ["Appetizer", "Main Course", "Side", "Dessert"];
-	const allCategories = ["All", ...categories];
-
-	const { addDishToMenu, isLoading, menuItems, getAllDishes } = useMenu();
-	const { error, success } = useToast();
-
-	const [newItem, setNewItem] = useState({
-		name: "",
-		description: "",
-		price: "",
-		category: "",
-		image: "",
-		quantity: 0,
-	});
-
-	const [imagePreview, setImagePreview] = useState<string | null>(null);
+	const { isLoading, menuItems, getAllDishes } = useMenu();
 	const [isRefetch, setIsRefetch] = useState<boolean>(false);
-
-	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const { name, value } = e.target;
-		setNewItem((prev) => ({
-			...prev,
-			[name]: value,
-		}));
-	};
-
-	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target.files?.[0];
-
-		if (!file) return;
-
-		if (!file.type.match("image.*")) {
-			error("Please select an image file");
-			return;
-		}
-
-		const reader = new FileReader();
-
-		reader.onloadend = () => {
-			const base64String = reader.result?.toString() as string;
-			setImagePreview(base64String);
-			console.log(base64String);
-
-			setNewItem((prev) => ({
-				...prev,
-				image: base64String,
-			}));
-		};
-
-		reader.onerror = () => {
-			console.error("Error reading file");
-		};
-
-		reader.readAsDataURL(file);
-	};
-
-	const handleAddItem = async (e: React.FormEvent) => {
-		e.preventDefault();
-		if (
-			!newItem.name ||
-			!newItem.price ||
-			!newItem.category ||
-			!newItem.image ||
-			!newItem.description ||
-			!newItem.quantity
-		) {
-			error("Please fill in all required fields and upload an image!");
-			return;
-		}
-
-		const newMenuItem = {
-			...newItem,
-			price: parseFloat(newItem.price),
-		};
-		try {
-			console.table(newMenuItem);
-			await addDishToMenu(newMenuItem);
-			success("Item added successfully! 🎉");
-		} catch (err) {
-			const message =
-				(err as AxiosError<{ message?: string }>)?.response?.data
-					?.message ??
-				(err as Error)?.message ??
-				"Failed to add item 😵";
-			error(message);
-		}
-		setNewItem({
-			name: "",
-			description: "",
-			price: "",
-			category: "",
-			image: "",
-			quantity: 0,
-		});
-		setImagePreview(null);
-		setIsRefetch((prev) => !prev);
-	};
 
 	useEffect(() => {
 		(async () => {
 			await getAllDishes();
 		})();
 	}, [isRefetch]);
+
+	const toogleFetch = () => setIsRefetch((prev) => !prev);
 
 	return (
 		<Layout>
@@ -142,123 +51,7 @@ const Menu = () => {
 						</p>
 					</div>
 
-					<Dialog>
-						<DialogTrigger asChild>
-							<Button className="bg-amber-600 hover:bg-amber-700 dark:text-white">
-								<Plus className="size-4" />
-								Add Menu Item
-							</Button>
-						</DialogTrigger>
-						<DialogContent>
-							<DialogHeader>
-								<DialogTitle className="text-2xl font-bold mb-4">
-									Add New Menu Item
-								</DialogTitle>
-							</DialogHeader>
-							<form className="space-y-4">
-								<div className="space-y-2">
-									<Label htmlFor="name">Item Name</Label>
-									<Input
-										id="name"
-										placeholder="Enter item name"
-										name="name"
-										value={newItem.name}
-										onChange={handleInputChange}
-									/>
-								</div>
-
-								<div className="space-y-2">
-									<Label htmlFor="description">
-										Description
-									</Label>
-									<Input
-										id="description"
-										placeholder="Enter description"
-										name="description"
-										value={newItem.description}
-										onChange={handleInputChange}
-									/>
-								</div>
-
-								<div className="space-y-2">
-									<Label htmlFor="price">Price</Label>
-									<Input
-										id="price"
-										placeholder="Enter price"
-										name="price"
-										type="number"
-										value={newItem.price}
-										onChange={handleInputChange}
-									/>
-								</div>
-
-								<div className="space-y-2">
-									<Label htmlFor="quantity">Quantity</Label>
-									<Input
-										id="quantity"
-										placeholder="Enter dish quantity..."
-										name="quantity"
-										type="number"
-										value={newItem.quantity}
-										onChange={handleInputChange}
-									/>
-								</div>
-
-								<div className="space-y-2">
-									<Label htmlFor="category">Category</Label>
-									<Select
-										onValueChange={(value) =>
-											setNewItem((prev) => ({
-												...prev,
-												category: value,
-											}))
-										}
-									>
-										<SelectTrigger
-											className="w-full"
-											id="category"
-										>
-											<SelectValue placeholder="Select Category" />
-										</SelectTrigger>
-										<SelectContent>
-											{categories.map((category) => (
-												<SelectItem
-													key={category}
-													value={category}
-												>
-													{category}
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
-								</div>
-
-								<div className="space-y-2">
-									<Label htmlFor="image">Upload Image</Label>
-									<Input
-										id="image"
-										type="file"
-										accept="image/*"
-										onChange={handleImageChange}
-									/>
-									{imagePreview && (
-										<img
-											src={imagePreview}
-											alt="Preview"
-											className="w-full h-40 object-cover rounded-lg border"
-										/>
-									)}
-								</div>
-
-								<Button
-									className="w-full bg-amber-600 hover:bg-amber-700"
-									onClick={handleAddItem}
-								>
-									{isLoading ? "Loading..." : "Add Item"}
-								</Button>
-							</form>
-						</DialogContent>
-					</Dialog>
+					<AddMenuItem toogleFetch={toogleFetch} />
 				</div>
 
 				<div className="flex gap-2 flex-wrap">
@@ -303,6 +96,12 @@ const Menu = () => {
 												{item.category}
 											</Badge>
 										</div>
+										<span className="font-bold">
+											Quantity
+											<span className="text-amber-600 ml-4">
+												{item.quantity}
+											</span>
+										</span>
 									</div>
 
 									<h3 className="text-xl font-bold dark:text-white text-gray-900 mb-2">
@@ -311,15 +110,6 @@ const Menu = () => {
 									<p className="text-gray-600 dark:text-white/70 text-sm mb-4">
 										{item.description}
 									</p>
-
-									<div className="flex justify-between items-center">
-										<span className="text-2xl font-bold">
-											<span className="text-amber-600 mr-4">
-												Quantity
-											</span>
-											{item.quantity}
-										</span>
-									</div>
 									<div className="flex justify-between items-center">
 										<span className="text-2xl font-bold text-amber-600">
 											Rs. {item.price}
@@ -539,6 +329,218 @@ const EditDishDetails = ({ item }: { item: DishData }) => {
 						onClick={handleAddItem}
 					>
 						{isLoading ? "Updating..." : "Update Item"}
+					</Button>
+				</form>
+			</DialogContent>
+		</Dialog>
+	);
+};
+
+interface AddMenuItemInterface {
+	toogleFetch: () => void;
+}
+
+const AddMenuItem = ({ toogleFetch }: AddMenuItemInterface) => {
+	const { addDishToMenu, isLoading } = useMenu();
+	const { error, success } = useToast();
+
+	const [newItem, setNewItem] = useState({
+		name: "",
+		description: "",
+		price: "",
+		category: "",
+		image: "",
+		quantity: 0,
+	});
+
+	const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = e.target;
+		setNewItem((prev) => ({
+			...prev,
+			[name]: value,
+		}));
+	};
+
+	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
+
+		if (!file) return;
+
+		if (!file.type.match("image.*")) {
+			error("Please select an image file");
+			return;
+		}
+
+		const reader = new FileReader();
+
+		reader.onloadend = () => {
+			const base64String = reader.result?.toString() as string;
+			setImagePreview(base64String);
+			console.log(base64String);
+
+			setNewItem((prev) => ({
+				...prev,
+				image: base64String,
+			}));
+		};
+
+		reader.onerror = () => {
+			console.error("Error reading file");
+		};
+
+		reader.readAsDataURL(file);
+	};
+
+	const handleAddItem = async (e: React.FormEvent) => {
+		e.preventDefault();
+		if (
+			!newItem.name ||
+			!newItem.price ||
+			!newItem.category ||
+			!newItem.image ||
+			!newItem.description ||
+			!newItem.quantity
+		) {
+			error("Please fill in all required fields and upload an image!");
+			return;
+		}
+
+		const newMenuItem = {
+			...newItem,
+			price: parseFloat(newItem.price),
+		};
+		try {
+			console.table(newMenuItem);
+			await addDishToMenu(newMenuItem);
+			success("Item added successfully! 🎉");
+		} catch (err) {
+			const message =
+				(err as AxiosError<{ message?: string }>)?.response?.data
+					?.message ??
+				(err as Error)?.message ??
+				"Failed to add item 😵";
+			error(message);
+		}
+		setNewItem({
+			name: "",
+			description: "",
+			price: "",
+			category: "",
+			image: "",
+			quantity: 0,
+		});
+		setImagePreview(null);
+		toogleFetch();
+	};
+
+	return (
+		<Dialog>
+			<DialogTrigger asChild>
+				<Button className="bg-amber-600 hover:bg-amber-700 dark:text-white">
+					<Plus className="size-4" />
+					Add Menu Item
+				</Button>
+			</DialogTrigger>
+			<DialogContent>
+				<DialogHeader>
+					<DialogTitle className="text-2xl font-bold mb-4">
+						Add New Menu Item
+					</DialogTitle>
+				</DialogHeader>
+				<form className="space-y-4">
+					<div className="space-y-2">
+						<Label htmlFor="name">Item Name</Label>
+						<Input
+							id="name"
+							placeholder="Enter item name"
+							name="name"
+							value={newItem.name}
+							onChange={handleInputChange}
+						/>
+					</div>
+
+					<div className="space-y-2">
+						<Label htmlFor="description">Description</Label>
+						<Input
+							id="description"
+							placeholder="Enter description"
+							name="description"
+							value={newItem.description}
+							onChange={handleInputChange}
+						/>
+					</div>
+
+					<div className="space-y-2">
+						<Label htmlFor="price">Price</Label>
+						<Input
+							id="price"
+							placeholder="Enter price"
+							name="price"
+							type="number"
+							value={newItem.price}
+							onChange={handleInputChange}
+						/>
+					</div>
+
+					<div className="space-y-2">
+						<Label htmlFor="quantity">Quantity</Label>
+						<Input
+							id="quantity"
+							placeholder="Enter dish quantity..."
+							name="quantity"
+							type="number"
+							value={newItem.quantity}
+							onChange={handleInputChange}
+						/>
+					</div>
+
+					<div className="space-y-2">
+						<Label htmlFor="category">Category</Label>
+						<Select
+							onValueChange={(value) =>
+								setNewItem((prev) => ({
+									...prev,
+									category: value,
+								}))
+							}
+						>
+							<SelectTrigger className="w-full" id="category">
+								<SelectValue placeholder="Select Category" />
+							</SelectTrigger>
+							<SelectContent>
+								{categories.map((category) => (
+									<SelectItem key={category} value={category}>
+										{category}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+					</div>
+
+					<div className="space-y-2">
+						<Label htmlFor="image">Upload Image</Label>
+						<Input
+							id="image"
+							type="file"
+							accept="image/*"
+							onChange={handleImageChange}
+						/>
+						{imagePreview && (
+							<img
+								src={imagePreview}
+								alt="Preview"
+								className="w-full h-40 object-cover rounded-lg border"
+							/>
+						)}
+					</div>
+
+					<Button
+						className="w-full bg-amber-600 hover:bg-amber-700"
+						onClick={handleAddItem}
+					>
+						{isLoading ? "Loading..." : "Add Item"}
 					</Button>
 				</form>
 			</DialogContent>

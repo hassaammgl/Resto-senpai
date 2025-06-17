@@ -19,3 +19,7 @@ export const updateDish = Joi.object({
     quantity: Joi.number().required()
 })
 
+export const deleteDish = Joi.object({
+    _id: Joi.string().required(),
+})
+

@@ -76,6 +76,22 @@ export const useMenu = create<MenuState>()(
 					set({ isLoading: false });
 				}
 			},
+			deleteDish: async (_id) => {
+				try {
+					set({ isLoading: true, error: null });
+
+					const { data } = await axiosInstance.delete(
+						`/api/menu/delete-dish/${_id}`
+					);
+					set({ menuItems: [...data.data] });
+				} catch (err: any) {
+					const errorMessage = getErrorMessage(err);
+					set({ error: errorMessage });
+					throw new Error(errorMessage);
+				} finally {
+					set({ isLoading: false });
+				}
+			},
 			clearError: () => set({ error: null }),
 		}),
 		{

@@ -24,3 +24,5 @@ out/
 .idea/
 *.sublime-workspace
 *.sublime-project
+
+./src/uploads/*
