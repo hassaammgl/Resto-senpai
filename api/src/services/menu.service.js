@@ -28,15 +28,26 @@ export class MenuService {
         const { _id, name, description, price, category, image, quantity } = data;
         try {
             const urlRegEx = /https:/g;
-            urlRegEx.test(image)
-            // const imgUrl = await Upload.uploadImg(image);
-            // console.log(name, description, price, category, imgUrl, quantity, _id);
-            // const updatedDish = await Dish.findByIdAndUpdate({ _id }, { name, description, price, category, imgUrl, quantity })
-            // updatedDish.save();
-            // console.log(updatedDish);
-            // return {
-            //     updatedDish
-            // }
+            console.log(urlRegEx.test(image));
+            if (urlRegEx.test(image)) {
+                console.log(name, description, price, category, imgUrl, quantity, _id);
+                const updatedDish = await Dish.findByIdAndUpdate({ _id }, { name, description, price, category, imgUrl, quantity })
+                updatedDish.save();
+                console.log(updatedDish);
+                return {
+                    updatedDish
+                }
+            }
+            else {
+                const imgUrl = await Upload.uploadImg(image);
+                console.log(name, description, price, category, imgUrl, quantity, _id);
+                const updatedDish = await Dish.findByIdAndUpdate({ _id }, { name, description, price, category, imgUrl, quantity })
+                updatedDish.save();
+                console.log(updatedDish);
+                return {
+                    updatedDish
+                }
+            }
         } catch (error) {
             throw new AppError(error)
         }

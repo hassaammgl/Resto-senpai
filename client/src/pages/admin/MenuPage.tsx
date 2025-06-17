@@ -313,6 +313,14 @@ const Menu = () => {
 									</p>
 
 									<div className="flex justify-between items-center">
+										<span className="text-2xl font-bold">
+											<span className="text-amber-600 mr-4">
+												Quantity
+											</span>
+											{item.quantity}
+										</span>
+									</div>
+									<div className="flex justify-between items-center">
 										<span className="text-2xl font-bold text-amber-600">
 											Rs. {item.price}
 										</span>
@@ -344,6 +352,7 @@ const EditDishDetails = ({ item }: { item: DishData }) => {
 	const { error, success } = useToast();
 
 	const [newItem, setNewItem] = useState({
+		_id: item._id,
 		name: item.name,
 		description: item.description,
 		price: item.price,
@@ -401,7 +410,7 @@ const EditDishDetails = ({ item }: { item: DishData }) => {
 		};
 		try {
 			console.table(newMenuItem);
-			await updateDishDetails({ ...newMenuItem, _id });
+			await updateDishDetails({ ...newMenuItem });
 			success("Item added successfully! 🎉");
 		} catch (err) {
 			const message =
@@ -412,6 +421,7 @@ const EditDishDetails = ({ item }: { item: DishData }) => {
 			error(message);
 		}
 		setNewItem({
+			_id: "",
 			name: "",
 			description: "",
 			price: 0,
@@ -434,6 +444,7 @@ const EditDishDetails = ({ item }: { item: DishData }) => {
 					<DialogTitle className="text-2xl font-bold mb-4">
 						Edit your dish details
 					</DialogTitle>
+					{newItem._id}
 				</DialogHeader>
 				<form className="space-y-4">
 					<div className="space-y-2">
