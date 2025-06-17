@@ -25,4 +25,4 @@ out/
 *.sublime-workspace
 *.sublime-project
 
-./src/uploads/*
+/src/uploads/*
