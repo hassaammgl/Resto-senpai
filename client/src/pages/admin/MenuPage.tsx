@@ -27,7 +27,8 @@ import type { DishData } from "@/types/index";
 const categories = ["Appetizer", "Main Course", "Side", "Dessert"];
 const allCategories = ["All", ...categories];
 const Menu = () => {
-	const { isLoading, menuItems, getAllDishes } = useMenu();
+	const { isLoading, menuItems, getAllDishes, deleteDish } = useMenu();
+	const { info, error } = useToast();
 	const [isRefetch, setIsRefetch] = useState<boolean>(false);
 
 	useEffect(() => {
@@ -37,6 +38,22 @@ const Menu = () => {
 	}, [isRefetch]);
 
 	const toogleFetch = () => setIsRefetch((prev) => !prev);
+
+	const handleDelete = async (_id: string | undefined) => {
+		try {
+			console.log(_id);
+			await deleteDish(_id);
+			info("Item deleted successfully! 🎉");
+		} catch (err) {
+			const message =
+				(err as AxiosError<{ message?: string }>)?.response?.data
+					?.message ??
+				(err as Error)?.message ??
+				"Failed to delete item 😵";
+			error(message);
+		}
+		toogleFetch();
+	};
 
 	return (
 		<Layout>
@@ -117,6 +134,9 @@ const Menu = () => {
 										<div className="flex gap-2">
 											<EditDishDetails item={item} />
 											<Button
+												onClick={() =>
+													handleDelete(item?._id)
+												}
 												size="sm"
 												variant="outline"
 												className="text-red-600 hover:text-red-700"

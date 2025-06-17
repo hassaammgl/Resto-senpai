@@ -22,6 +22,16 @@ export const updateDishToDb = asyncHandler(async (req, res) => {
     })
 })
 
+export const deleteDishfromDb = asyncHandler(async (req, res) => {
+    const { allDishes } = await MenuService.deleteDish(req.params._id);
+    console.log(allDishes);
+    return ApiResponse.success(res, {
+        statusCode: 200,
+        message: "Dish deleted successfully",
+        data: allDishes
+    })
+})
+
 export const getAllDishes = asyncHandler(async (req, res) => {
     const { allDishes } = await MenuService.getAllDishes()
     console.log(allDishes);

@@ -76,9 +76,29 @@ export class MenuService {
             throw new AppError(error)
         }
     }
+
+    static async deleteDish(_id) {
+        try {
+            const dish = await Dish.findByIdAndDelete({ _id })
+            console.log("dish is deleted ", dish);
+            if (dish === null) {
+                throw new AppError("Error while deleting dish..")
+            } else {
+                let allDishes = await Dish.find()
+                allDishes = allDishes.reverse()
+                return {
+                    allDishes
+                }
+            }
+        } catch (error) {
+            throw new AppError(error)
+        }
+    }
+
     static async getAllDishes() {
         try {
-            const allDishes = await Dish.find()
+            let allDishes = await Dish.find()
+            allDishes = allDishes.reverse()
             return {
                 allDishes
             }

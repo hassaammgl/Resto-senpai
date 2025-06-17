@@ -56,7 +56,7 @@ export interface MenuState {
 	error: string | null;
 	addDishToMenu: (data: DishData) => Promise<void>;
 	updateDishDetails: (data: DishData) => Promise<void>;
-	deleteDish: (_id: string) => Promise<void>;
+	deleteDish: (_id: string | undefined) => Promise<void>;
 	getAllDishes: () => Promise<void>;
 	clearError: () => void;
 }
