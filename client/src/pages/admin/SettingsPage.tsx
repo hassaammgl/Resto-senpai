@@ -11,14 +11,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useAuth } from "@/store/auth";
-import { useEffect } from "react";
+import React, { useState } from "react";
 
 const SettingsPage = () => {
-	const { user } = useAuth();
-	useEffect(() => {
-		console.log(user);
-	}, []);
-
 	return (
 		<Layout>
 			<div className="space-y-8">
@@ -26,78 +21,13 @@ const SettingsPage = () => {
 					<h1 className="text-3xl font-bold dark:text-white text-gray-900 mb-2">
 						Settings
 					</h1>
-					<p className="text-gray-600">
+					<p className="text-gray-600 dark:text-white/70">
 						Configure your restaurant management system.
 					</p>
 				</div>
 
 				<div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-					<Card>
-						<CardHeader>
-							<CardTitle>Restaurant Information</CardTitle>
-							<CardDescription>
-								Update your restaurant's basic information
-							</CardDescription>
-						</CardHeader>
-						<CardContent className="space-y-4">
-							<div>
-								<Label htmlFor="restaurant-name">
-									Restaurant Name
-								</Label>
-								<Input
-									id="restaurant-name"
-									defaultValue="The Golden Fork"
-								/>
-							</div>
-							<div>
-								<Label htmlFor="address">Address</Label>
-								<div className="w-full flex justify-between flex-wrap">
-									<div className="flex w-full justify-between items-center gap-2">
-										<Input
-											id="city"
-											defaultValue={user?.address?.city}
-											placeholder="Lahore..."
-											className="w-1/2 my-2"
-										/>
-										<Input
-											id="state"
-											className="w-1/2 my-2"
-											defaultValue={user?.address?.state}
-											placeholder="Punjab..."
-										/>
-									</div>
-									<div className="flex w-full justify-between items-center gap-2">
-										<Input
-											id="street"
-											defaultValue={user?.address?.street}
-											className="w-1/2 my-2"
-											placeholder="Kalma Chowk..."
-										/>
-										<Input
-											id="zip code"
-											defaultValue={
-												user?.address?.zipCode
-											}
-											className="w-1/2 my-2"
-											placeholder="1234"
-										/>
-									</div>
-								</div>
-							</div>
-							<div>
-								<Label htmlFor="phone">Phone</Label>
-								<Input id="phone" defaultValue={user?.phone} />
-							</div>
-							<div>
-								<Label htmlFor="email">Email</Label>
-								<Input id="email" defaultValue={user?.email} />
-							</div>
-							<Button className="bg-amber-600 hover:bg-amber-700">
-								Save Changes
-							</Button>
-						</CardContent>
-					</Card>
-
+					<RestorantInformation />
 					<Card>
 						<CardHeader>
 							<CardTitle>Notifications</CardTitle>
@@ -141,93 +71,213 @@ const SettingsPage = () => {
 							</div>
 						</CardContent>
 					</Card>
-
-					<Card>
-						<CardHeader>
-							<CardTitle>Operating Hours</CardTitle>
-							<CardDescription>
-								Set your restaurant's operating schedule
-							</CardDescription>
-						</CardHeader>
-						<CardContent className="space-y-4">
-							<div className="grid grid-cols-2 gap-4">
-								<div>
-									<Label htmlFor="open-time">
-										Opening Time
-									</Label>
-									<Input
-										id="open-time"
-										type="time"
-										defaultValue="09:00"
-									/>
-								</div>
-								<div>
-									<Label htmlFor="close-time">
-										Closing Time
-									</Label>
-									<Input
-										id="close-time"
-										type="time"
-										defaultValue="22:00"
-									/>
-								</div>
-							</div>
-							<div className="flex items-center justify-between">
-								<div>
-									<Label htmlFor="weekend-hours">
-										Different Weekend Hours
-									</Label>
-									<p className="text-sm text-gray-600">
-										Use different hours for weekends
-									</p>
-								</div>
-								<Switch id="weekend-hours" />
-							</div>
-							<Button className="bg-amber-600 hover:bg-amber-700">
-								Update Hours
-							</Button>
-						</CardContent>
-					</Card>
-
-					<Card>
-						<CardHeader>
-							<CardTitle>System Preferences</CardTitle>
-							<CardDescription>
-								Configure system-wide settings
-							</CardDescription>
-						</CardHeader>
-						<CardContent className="space-y-4">
-							<div>
-								<Label htmlFor="currency">Currency</Label>
-								<Input id="currency" defaultValue="USD ($)" />
-							</div>
-							<div>
-								<Label htmlFor="tax-rate">Tax Rate (%)</Label>
-								<Input
-									id="tax-rate"
-									type="number"
-									defaultValue="8.5"
-								/>
-							</div>
-							<div className="flex items-center justify-between">
-								<div>
-									<Label htmlFor="auto-print">
-										Auto-print Orders
-									</Label>
-									<p className="text-sm text-gray-600">
-										Automatically print new orders
-									</p>
-								</div>
-								<Switch id="auto-print" defaultChecked />
-							</div>
-							<Button className="bg-amber-600 hover:bg-amber-700">
-								Save Preferences
-							</Button>
-						</CardContent>
-					</Card>
+					<WorkingHours />
+					<SystemPrefrences />
 				</div>
 			</div>
 		</Layout>
+	);
+};
+
+const RestorantInformation = () => {
+	const { user } = useAuth();
+
+	const [updateUserData, setUpdateUserData] = useState({
+		name: user?.name,
+		phone: user?.phone,
+		role: user?.role,
+		email: user?.email,
+		city: user?.address?.city,
+		state: user?.address?.state,
+		street: user?.address?.street,
+		zipCode: user?.address?.zipCode,
+		restorantName: "",
+	});
+	const handleInputChange = async (
+		e: React.ChangeEvent<HTMLInputElement>
+	) => {
+		const { name, value } = e.target;
+		setUpdateUserData((prev) => ({
+			...prev,
+			[name]: value,
+		}));
+	};
+	const handleUpdate = async () => {
+		console.log(updateUserData);
+	};
+	return (
+		<Card>
+			<CardHeader>
+				<CardTitle>Restaurant Information</CardTitle>
+				<CardDescription>
+					Update your restaurant's basic information
+				</CardDescription>
+			</CardHeader>
+			<CardContent className="space-y-4">
+				<div>
+					<Label className="mb-2" htmlFor="restaurant-name">
+						Restaurant Name
+					</Label>
+					<Input
+						id="restorantName"
+						name="restorantName"
+						placeholder="The Golden Fork..."
+						value={updateUserData.restorantName}
+						onChange={handleInputChange}
+					/>
+				</div>
+				<div>
+					<Label htmlFor="address">Address</Label>
+					<div className="w-full flex justify-between flex-wrap">
+						<div className="flex w-full justify-between items-center gap-2">
+							<Input
+								id="city"
+								name="city"
+								value={updateUserData.city}
+								placeholder="Lahore..."
+								className="w-1/2 my-2"
+								onChange={handleInputChange}
+							/>
+							<Input
+								id="state"
+								name="state"
+								className="w-1/2 my-2"
+								value={updateUserData.state}
+								placeholder="Punjab..."
+								onChange={handleInputChange}
+							/>
+						</div>
+						<div className="flex w-full justify-between items-center gap-2">
+							<Input
+								id="street"
+								name="street"
+								value={updateUserData.street}
+								className="w-1/2 my-2"
+								placeholder="Kalma Chowk..."
+								onChange={handleInputChange}
+							/>
+							<Input
+								id="zipCode"
+								name="zipCode"
+								value={updateUserData.zipCode}
+								type="number"
+								className="w-1/2 my-2"
+								placeholder="1234"
+								onChange={handleInputChange}
+							/>
+						</div>
+					</div>
+				</div>
+				<div>
+					<Label className="mb-2" htmlFor="phone">
+						Phone
+					</Label>
+					<Input
+						name="phone"
+						value={updateUserData.phone}
+						onChange={handleInputChange}
+					/>
+				</div>
+				<div>
+					<Label className="mb-2" htmlFor="email">
+						Email
+					</Label>
+					<Input
+						name="email"
+						value={updateUserData.email}
+						onChange={handleInputChange}
+					/>
+				</div>
+				<Button
+					onClick={handleUpdate}
+					className="bg-amber-600 hover:bg-amber-700 dark:text-white"
+				>
+					Save Changes
+				</Button>
+			</CardContent>
+		</Card>
+	);
+};
+
+const WorkingHours = () => {
+	return (
+		<Card>
+			<CardHeader>
+				<CardTitle>Operating Hours</CardTitle>
+				<CardDescription>
+					Set your restaurant's operating schedule
+				</CardDescription>
+			</CardHeader>
+			<CardContent className="space-y-4">
+				<div className="grid grid-cols-2 gap-4">
+					<div>
+						<Label htmlFor="open-time">Opening Time</Label>
+						<Input
+							id="open-time"
+							type="time"
+							defaultValue="09:00"
+						/>
+					</div>
+					<div>
+						<Label htmlFor="close-time">Closing Time</Label>
+						<Input
+							id="close-time"
+							type="time"
+							defaultValue="22:00"
+						/>
+					</div>
+				</div>
+				<div className="flex items-center justify-between">
+					<div>
+						<Label htmlFor="weekend-hours">
+							Different Weekend Hours
+						</Label>
+						<p className="text-sm text-gray-600">
+							Use different hours for weekends
+						</p>
+					</div>
+					<Switch id="weekend-hours" />
+				</div>
+				<Button className="bg-amber-600 hover:bg-amber-700">
+					Update Hours
+				</Button>
+			</CardContent>
+		</Card>
+	);
+};
+
+const SystemPrefrences = () => {
+	return (
+		<Card>
+			<CardHeader>
+				<CardTitle>System Preferences</CardTitle>
+				<CardDescription>
+					Configure system-wide settings
+				</CardDescription>
+			</CardHeader>
+			<CardContent className="space-y-4">
+				<div>
+					<Label htmlFor="currency">Currency</Label>
+					<Input id="currency" defaultValue="USD ($)" />
+				</div>
+				<div>
+					<Label htmlFor="tax-rate">Tax Rate (%)</Label>
+					<Input id="tax-rate" type="number" defaultValue="8.5" />
+				</div>
+				<div className="flex items-center justify-between">
+					<div>
+						<Label htmlFor="auto-print">Auto-print Orders</Label>
+						<p className="text-sm text-gray-600">
+							Automatically print new orders
+						</p>
+					</div>
+					<Switch id="auto-print" defaultChecked />
+				</div>
+				<Button className="bg-amber-600 hover:bg-amber-700">
+					Save Preferences
+				</Button>
+			</CardContent>
+		</Card>
 	);
 };
 

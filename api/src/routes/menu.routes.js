@@ -6,8 +6,10 @@ import { addDishToDb, getAllDishes, updateDishToDb, deleteDishfromDb } from "../
 
 const router = Router()
 
+router.get("/get-all-dishes", protect, getAllDishes);
+
 router.post('/add-dish', protect, validateRequest(addDish), addDishToDb);
 router.post('/update-dish', protect, validateRequest(updateDish), updateDishToDb);
 router.delete('/delete-dish/:_id', protect, validateRequest(deleteDish, true), deleteDishfromDb);
-router.get("/get-all-dishes", protect, getAllDishes);
+
 export default router;

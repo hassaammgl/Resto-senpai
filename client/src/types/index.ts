@@ -21,6 +21,13 @@ type AuthUser = {
 	address?: UserAddress | null;
 };
 
+interface UpdateAddressInterface extends UserAddress {
+	name: string;
+	phone: string;
+	role: string;
+	email: string;
+}
+
 export type AuthState = {
 	user: AuthUser | null;
 	isAuthenticated: boolean;
@@ -35,6 +42,7 @@ export type AuthState = {
 		password: string
 	) => Promise<void>;
 	logout: () => Promise<void>;
+	updateAddress: (data: UpdateAddressInterface) => Promise<void>;
 	checkIsAuthenticated: () => Promise<void>;
 	clearError: () => void;
 };

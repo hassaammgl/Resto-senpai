@@ -80,7 +80,9 @@ export const useAuth = create<AuthState>()(
 					set({ user: null, isAuthenticated: false });
 				}
 			},
-
+			updateAddress: async (data) => {
+				
+			},
 			checkIsAuthenticated: async () => {
 				try {
 					set({ isLoading: true, error: null });
