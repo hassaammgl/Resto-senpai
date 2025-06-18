@@ -22,10 +22,8 @@ type AuthUser = {
 };
 
 interface UpdateAddressInterface extends UserAddress {
-	name: string;
 	phone: string;
-	role: string;
-	email: string;
+	restorantName: string;
 }
 
 export type AuthState = {

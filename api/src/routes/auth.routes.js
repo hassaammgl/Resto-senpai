@@ -10,7 +10,9 @@ router.post('/register', validateRequest(register), registerUser)
 router.post('/login', validateRequest(login), loginUser)
 router.post('/logout', protect, logoutUser)
 router.get('/profile', protect, userProfile)
-router.post("/",()=>{})
+router.post("/update-address", () => {
+    console.log("address Update");
+})
 
 
 export default router;

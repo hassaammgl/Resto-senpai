@@ -14,11 +14,10 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/store/auth";
 import { useToast } from "@/hooks/useToast";
 import { AxiosError } from "axios";
-import { ModeToggle } from "@/components/mode-toggle";
 
 const Sidebar = () => {
 	const location = useLocation();
-	const { logout, user } = useAuth();
+	const { logout } = useAuth();
 	const { success, error } = useToast();
 
 	const navigate = useNavigate();
@@ -57,13 +56,6 @@ const Sidebar = () => {
 					<ChefHat className="h-8 w-8" />
 					Resto-Senpai
 				</h1>
-				<p className="text-amber-200 text-sm mt-1 flex justify-between items-center">
-					<span>
-						{user?.name}
-						<sup className="font-bold">(Admin)</sup>
-					</span>
-					<ModeToggle />
-				</p>
 			</div>
 
 			<nav className="mt-8 px-4">

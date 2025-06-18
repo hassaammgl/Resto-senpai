@@ -85,8 +85,6 @@ const RestorantInformation = () => {
 	const [updateUserData, setUpdateUserData] = useState({
 		name: user?.name,
 		phone: user?.phone,
-		role: user?.role,
-		email: user?.email,
 		city: user?.address?.city,
 		state: user?.address?.state,
 		street: user?.address?.street,
@@ -126,42 +124,59 @@ const RestorantInformation = () => {
 						onChange={handleInputChange}
 					/>
 				</div>
-				<div>
-					<Label htmlFor="address">Address</Label>
-					<div className="w-full flex justify-between flex-wrap">
-						<div className="flex w-full justify-between items-center gap-2">
+				<div className="w-full flex justify-between flex-wrap">
+					<div className="flex w-full justify-between items-center gap-2">
+						<div className="">
+							<Label className="mb-2" htmlFor="city">
+								City
+							</Label>
 							<Input
 								id="city"
 								name="city"
 								value={updateUserData.city}
 								placeholder="Lahore..."
-								className="w-1/2 my-2"
+								className="w-full my-2"
 								onChange={handleInputChange}
 							/>
+						</div>
+						<div>
+							<Label className="mb-2" htmlFor="city">
+								State
+							</Label>
 							<Input
 								id="state"
 								name="state"
-								className="w-1/2 my-2"
+								className="w-full my-2"
 								value={updateUserData.state}
 								placeholder="Punjab..."
 								onChange={handleInputChange}
 							/>
 						</div>
-						<div className="flex w-full justify-between items-center gap-2">
+					</div>
+					<div className="flex w-full justify-between items-center gap-2">
+						<div>
+							<Label className="mb-2" htmlFor="street">
+								Street
+							</Label>
 							<Input
 								id="street"
 								name="street"
 								value={updateUserData.street}
-								className="w-1/2 my-2"
+				 				className="w-full my-2"
 								placeholder="Kalma Chowk..."
 								onChange={handleInputChange}
 							/>
+						</div>
+						<div>
+							<Label className="mb-2" htmlFor="zipCode">
+								Zip Code
+							</Label>
 							<Input
 								id="zipCode"
 								name="zipCode"
 								value={updateUserData.zipCode}
 								type="number"
-								className="w-1/2 my-2"
+								className="w-full my-2"
 								placeholder="1234"
 								onChange={handleInputChange}
 							/>
@@ -175,16 +190,6 @@ const RestorantInformation = () => {
 					<Input
 						name="phone"
 						value={updateUserData.phone}
-						onChange={handleInputChange}
-					/>
-				</div>
-				<div>
-					<Label className="mb-2" htmlFor="email">
-						Email
-					</Label>
-					<Input
-						name="email"
-						value={updateUserData.email}
 						onChange={handleInputChange}
 					/>
 				</div>

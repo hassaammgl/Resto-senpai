@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import axios from "axios";
@@ -80,8 +81,25 @@ export const useAuth = create<AuthState>()(
 					set({ user: null, isAuthenticated: false });
 				}
 			},
-			updateAddress: async (data) => {
-				
+			updateAddress: async (newData) => {
+				try {
+					set({ isLoading: true, error: null });
+
+					const { data } = await axiosInstance.post(
+						"/api/auth/update-address",
+						{
+							...newData,
+						}
+					);
+
+					set({ user: data.data, isAuthenticated: true });
+				} catch (err: any) {
+					const errorMessage = getErrorMessage(err);
+					set({ error: errorMessage });
+					throw new Error(errorMessage);
+				} finally {
+					set({ isLoading: false });
+				}
 			},
 			checkIsAuthenticated: async () => {
 				try {
@@ -96,6 +114,7 @@ export const useAuth = create<AuthState>()(
 						isAuthenticated: true,
 					});
 				} catch (err) {
+					console.log(err);
 					set({
 						user: null,
 						isAuthenticated: false,
