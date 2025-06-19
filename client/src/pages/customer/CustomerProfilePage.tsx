@@ -40,14 +40,6 @@ const CustomerProfilePage = () => {
 								<Input id="name" defaultValue={user?.name} />
 							</div>
 							<div>
-								<Label htmlFor="email">Email</Label>
-								<Input
-									id="email"
-									type="email"
-									defaultValue={user?.email}
-								/>
-							</div>
-							<div>
 								<Label htmlFor="phone">Phone</Label>
 								<Input id="phone" defaultValue={user?.phone} />
 							</div>

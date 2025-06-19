@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useAuth } from "@/store/auth";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useToast } from "@/hooks/useToast";
 import type { AxiosError } from "axios";
 
@@ -84,11 +84,6 @@ const SettingsPage = () => {
 const RestorantInformation = () => {
 	const { user, updateAddress } = useAuth();
 	const { success, error } = useToast();
-
-	useEffect(() => {
-		console.log(user);
-	}, []);
-
 	const [updateUserData, setUpdateUserData] = useState({
 		phone: user?.phone,
 		city: user?.address?.city,

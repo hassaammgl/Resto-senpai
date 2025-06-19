@@ -28,7 +28,27 @@ const dishSchema = new mongoose.Schema({
     quantity: {
         type: Number,
         default: 0
-    }
+    },
+    rating: {
+        type: Number,
+        default: 1,
+    },
+    prepTime: {
+        type: String,
+        required: true
+    },
+    calories: {
+        type: Number,
+        default: 0,
+    },
+    isVegetarian: {
+        type: Boolean,
+        default: false,
+    },
+    isPopular: {
+        type: Boolean,
+        default: true,
+    },
 });
 
 const Dish = mongoose.model("Dish", dishSchema);

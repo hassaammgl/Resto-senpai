@@ -10,9 +10,9 @@ import InventoryPage from "@/pages/admin/InventoryPage";
 import PromotionsPage from "@/pages/admin/PromotionsPage";
 import SettingsPage from "@/pages/admin/SettingsPage";
 // import CustomerCartPage from "@/pages/customer/CustomerCartPage";
-// import CustomerMenuPage from "@/pages/customer/CustomerMenuPage";
+import CustomerMenuPage from "@/pages/customer/CustomerMenuPage";
 // import CustomerOrdersPage from "@/pages/customer/CustomerOrdersPage";
-// import CustomerProfilePage from "@/pages/customer/CustomerProfilePage";
+import CustomerProfilePage from "@/pages/customer/CustomerProfilePage";
 import Home from "@/pages/Home";
 import { AuthGuard } from "./AuthGuard";
 
@@ -105,14 +105,14 @@ const routes = [
 	// 		</AuthGuard>
 	// 	),
 	// },
-	// {
-	// 	path: "/customer/menu",
-	// 	element: (
-	// 		<AuthGuard>
-	// 			<CustomerMenuPage />
-	// 		</AuthGuard>
-	// 	),
-	// },
+	{
+		path: "/customer/menu",
+		element: (
+			<AuthGuard>
+				<CustomerMenuPage />
+			</AuthGuard>
+		),
+	},
 	// {
 	// 	path: "/customer/orders",
 	// 	element: (
@@ -121,14 +121,14 @@ const routes = [
 	// 		</AuthGuard>
 	// 	),
 	// },
-	// {
-	// 	path: "/customer/profile",
-	// 	element: (
-	// 		<AuthGuard>
-	// 			<CustomerProfilePage />
-	// 		</AuthGuard>
-	// 	),
-	// },
+	{
+		path: "/customer/profile",
+		element: (
+			<AuthGuard>
+				<CustomerProfilePage />
+			</AuthGuard>
+		),
+	},
 	{
 		path: "*",
 		element: <NotFound />,
