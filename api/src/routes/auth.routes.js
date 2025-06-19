@@ -10,7 +10,7 @@ router.post('/register', validateRequest(register), registerUser)
 router.post('/login', validateRequest(login), loginUser)
 router.post('/logout', protect, logoutUser)
 router.get('/profile', protect, userProfile)
-router.post("/update-address", protect, validateRequest(updateUserData), updateUserData)
+router.post("/update-address", protect, validateRequest(updateUserDetails), updateUserData)
 
 
 export default router;
