@@ -12,6 +12,8 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useAuth } from "@/store/auth";
 import React, { useState } from "react";
+import { useToast } from "@/hooks/useToast";
+import type { AxiosError } from "axios";
 
 const SettingsPage = () => {
 	return (
@@ -81,6 +83,7 @@ const SettingsPage = () => {
 
 const RestorantInformation = () => {
 	const { user, updateAddress } = useAuth();
+	const { success, error } = useToast();
 
 	const [updateUserData, setUpdateUserData] = useState({
 		phone: user?.phone,
@@ -101,6 +104,17 @@ const RestorantInformation = () => {
 	};
 	const handleUpdate = async () => {
 		console.log(updateUserData);
+		try {
+			await updateAddress(updateUserData);
+			success("Address updated successfully! 🎉");
+		} catch (err) {
+			const message =
+				(err as AxiosError<{ message?: string }>)?.response?.data
+					?.message ??
+				(err as Error)?.message ??
+				"Failed to update address 😵";
+			error(message);
+		}
 	};
 	return (
 		<Card>

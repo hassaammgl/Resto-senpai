@@ -5,10 +5,10 @@ export interface AppLayoutProps {
 }
 
 type UserAddress = {
-	street: string;
-	city: string;
-	zipCode: string;
-	state: string;
+	street: string | undefined;
+	city: string | undefined;
+	zipCode: string | undefined;
+	state: string | undefined;
 };
 
 type AuthUser = {
@@ -22,8 +22,8 @@ type AuthUser = {
 };
 
 interface UpdateAddressInterface extends UserAddress {
-	phone: string;
-	restorantName: string;
+	phone: string | undefined;
+	restorantName: string | undefined;
 }
 
 export type AuthState = {
