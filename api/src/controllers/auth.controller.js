@@ -43,3 +43,7 @@ export const userProfile = asyncHandler(async (req, res) => {
         data: user
     })
 })
+
+export const updateUserData = asyncHandler(async (req, res) => {
+    
+})

@@ -80,10 +80,9 @@ const SettingsPage = () => {
 };
 
 const RestorantInformation = () => {
-	const { user } = useAuth();
+	const { user, updateAddress } = useAuth();
 
 	const [updateUserData, setUpdateUserData] = useState({
-		name: user?.name,
 		phone: user?.phone,
 		city: user?.address?.city,
 		state: user?.address?.state,
@@ -162,7 +161,7 @@ const RestorantInformation = () => {
 								id="street"
 								name="street"
 								value={updateUserData.street}
-				 				className="w-full my-2"
+								className="w-full my-2"
 								placeholder="Kalma Chowk..."
 								onChange={handleInputChange}
 							/>
