@@ -19,6 +19,7 @@ type AuthUser = {
 	phone: string;
 	loyaltyPoints?: string;
 	address?: UserAddress | null;
+	restorantName?: string;
 };
 
 interface UpdateAddressInterface extends UserAddress {

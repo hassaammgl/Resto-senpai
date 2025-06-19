@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useAuth } from "@/store/auth";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useToast } from "@/hooks/useToast";
 import type { AxiosError } from "axios";
 
@@ -85,13 +85,17 @@ const RestorantInformation = () => {
 	const { user, updateAddress } = useAuth();
 	const { success, error } = useToast();
 
+	useEffect(() => {
+		console.log(user);
+	}, []);
+
 	const [updateUserData, setUpdateUserData] = useState({
 		phone: user?.phone,
 		city: user?.address?.city,
 		state: user?.address?.state,
 		street: user?.address?.street,
 		zipCode: user?.address?.zipCode,
-		restorantName: "",
+		restorantName: user?.restorantName,
 	});
 	const handleInputChange = async (
 		e: React.ChangeEvent<HTMLInputElement>
@@ -103,8 +107,8 @@ const RestorantInformation = () => {
 		}));
 	};
 	const handleUpdate = async () => {
-		console.log(updateUserData);
 		try {
+			console.table(updateUserData);
 			await updateAddress(updateUserData);
 			success("Address updated successfully! 🎉");
 		} catch (err) {

@@ -35,9 +35,9 @@ export const logoutUser = asyncHandler(async (req, res) => {
 })
 
 export const userProfile = asyncHandler(async (req, res) => {
-    const { user } =await AuthService.getProfile(req.user.id)
-    console.log("the user => ",user);
-    
+    const { user } = await AuthService.getProfile(req.user.id)
+    console.log("the user => ", user);
+
     return ApiResponse.success(res, {
         message: "user found successfully",
         data: user
@@ -45,5 +45,11 @@ export const userProfile = asyncHandler(async (req, res) => {
 })
 
 export const updateUserData = asyncHandler(async (req, res) => {
-    
+    const { user } = await AuthService.updateProfile(req.body, req.user._id);
+    console.log(user);
+    return ApiResponse.success(res, {
+        statusCode: 204,
+        message: "User Updated Succesfully",
+        data: user
+    })
 })

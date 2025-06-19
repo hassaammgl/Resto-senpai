@@ -44,9 +44,19 @@ const userSchema = new mongoose.Schema({
   },
   address: {
     city: String,
-    province: String,
+    state: String,
     street: String,
     zipCode: String,
+  },
+  restorantName: {
+    type: String,
+    validate: {
+      validator: function (v) {
+        if (this.role !== 'admin') return true;
+        return v && v.trim().length > 0;
+      },
+      message: 'Restaurant name is only for admin users'
+    }
   }
 });
 

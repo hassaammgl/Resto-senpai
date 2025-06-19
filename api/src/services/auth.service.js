@@ -2,7 +2,6 @@ import User from "../models/user.model";
 import { TokenService } from "../utils/Jwt";
 import { AppError } from "../utils/AppError";
 import { DTO } from "../utils/Dto";
-import argon2 from "argon2";
 
 export class AuthService {
     static async #generateAuthTokens(user) {
@@ -66,13 +65,12 @@ export class AuthService {
         }
 
         const tokens = await this.#generateAuthTokens(user);
-        console.log(user);
-
         return {
             ...tokens,
             user: DTO.userDto(user),
         };
     }
+
     static async logout(_id) {
         await User.findByIdAndUpdate({ _id }, { refreshToken: null })
         return true
@@ -83,10 +81,38 @@ export class AuthService {
         if (!user) {
             throw new AppError('User not found', 404);
         }
-        console.log(user);
-
         return {
             user
         }
+    }
+
+    static async updateProfile(data, userId) {
+        const {
+            phone,
+            city,
+            state,
+            street,
+            zipCode,
+            restorantName
+        } = data;
+        try {
+            const isUserExist = await User.findById({ _id: userId });
+            isUserExist.address = {
+                city,
+                state,
+                street,
+                zipCode,
+            };
+            isUserExist.restorantName = restorantName;
+            isUserExist.phone = phone;
+            await isUserExist.save()
+            return {
+                user: DTO.updatedUser(isUserExist),
+            }
+
+        } catch (error) {
+            throw new AppError(error.message);
+        }
+
     }
 }
