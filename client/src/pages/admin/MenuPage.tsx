@@ -16,16 +16,18 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Plus, Edit, Trash2 } from "lucide-react";
+import { Plus, Edit, Trash2, Upload, Loader2 } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/useToast";
 import { useMenu } from "@/store/menu";
 import { AxiosError } from "axios";
 import type { DishData } from "@/types/index";
+import { Switch } from "@/components/ui/switch";
 
 const categories = ["Appetizer", "Main Course", "Side", "Dessert"];
 const allCategories = ["All", ...categories];
+
 const Menu = () => {
 	const { isLoading, menuItems, getAllDishes, deleteDish } = useMenu();
 	const { info, error } = useToast();
@@ -40,10 +42,12 @@ const Menu = () => {
 	const toogleFetch = () => setIsRefetch((prev) => !prev);
 
 	const handleDelete = async (_id: string | undefined) => {
+		if (!_id) return;
+
 		try {
-			console.log(_id);
 			await deleteDish(_id);
 			info("Item deleted successfully! 🎉");
+			toogleFetch();
 		} catch (err) {
 			const message =
 				(err as AxiosError<{ message?: string }>)?.response?.data
@@ -52,7 +56,6 @@ const Menu = () => {
 				"Failed to delete item 😵";
 			error(message);
 		}
-		toogleFetch();
 	};
 
 	return (
@@ -67,7 +70,6 @@ const Menu = () => {
 							Manage your restaurant's menu items and pricing.
 						</p>
 					</div>
-
 					<AddMenuItem toogleFetch={toogleFetch} />
 				</div>
 
@@ -112,6 +114,11 @@ const Menu = () => {
 											<Badge variant="outline">
 												{item.category}
 											</Badge>
+											{item.isVegetarian && (
+												<Badge variant="secondary">
+													Vegetarian
+												</Badge>
+											)}
 										</div>
 										<span className="font-bold">
 											Quantity
@@ -132,7 +139,10 @@ const Menu = () => {
 											Rs. {item.price}
 										</span>
 										<div className="flex gap-2">
-											<EditDishDetails item={item} />
+											<EditDishDetails
+												item={item}
+												toogleFetch={toogleFetch}
+											/>
 											<Button
 												onClick={() =>
 													handleDelete(item?._id)
@@ -155,233 +165,282 @@ const Menu = () => {
 	);
 };
 
-const EditDishDetails = ({ item }: { item: DishData }) => {
-	const categories = ["Appetizer", "Main Course", "Side", "Dessert"];
+interface EditDishDetailsProps {
+	item: DishData;
+	toogleFetch: () => void;
+}
 
+interface EditDishDetailsProps {
+	item: DishData;
+	toogleFetch: () => void;
+}
+
+export const EditDishDetails = ({
+	item,
+	toogleFetch,
+}: EditDishDetailsProps) => {
 	const { updateDishDetails, isLoading } = useMenu();
 	const { error, success } = useToast();
 
-	const [newItem, setNewItem] = useState({
+	const [formData, setFormData] = useState<DishData>({
 		_id: item._id,
 		name: item.name,
 		description: item.description,
 		price: item.price,
 		category: item.category,
-		image: item.image,
+		image: item.image || "",
 		quantity: item.quantity,
+		calories: item.calories || 0,
+		isVegetarian: item.isVegetarian || false,
+		isPopular: item.isPopular || false,
+		available: item.available || true,
+		prepTime: item.prepTime,
 	});
 
-	const [imagePreview, setImagePreview] = useState<string | null>(item.image);
+	const [imagePreview, setImagePreview] = useState<string | null>(
+		item.image || null
+	);
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const { name, value } = e.target;
-		setNewItem((prev) => ({
+		const { name, value, type } = e.target;
+		setFormData((prev) => ({
 			...prev,
-			[name]: value,
+			[name]: type === "number" ? Number(value) : value,
 		}));
 	};
 
-	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target.files?.[0];
+	const handleSwitchToggle =
+		(field: keyof DishData) => (checked: boolean) => {
+			setFormData((prev) => ({ ...prev, [field]: checked }));
+		};
 
+	const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
 		if (!file) return;
 
-		if (!file.type.match("image.*")) {
-			error("Please select an image file");
+		if (!file.type.startsWith("image/")) {
+			error("Please select a valid image file");
 			return;
 		}
 
 		const reader = new FileReader();
-
-		reader.onloadend = () => {
-			const base64String = reader.result?.toString() as string;
-			setImagePreview(base64String);
-			console.log(base64String);
-
-			setNewItem((prev) => ({
-				...prev,
-				image: base64String,
-			}));
+		reader.onload = () => {
+			const result = reader.result as string;
+			setImagePreview(result);
+			setFormData((prev) => ({ ...prev, image: result }));
 		};
-
-		reader.onerror = () => {
-			console.error("Error reading file");
-		};
-
+		reader.onerror = () => error("Error reading image file");
 		reader.readAsDataURL(file);
 	};
 
-	const handleAddItem = async (e: React.FormEvent) => {
+	const handleCategoryChange = (value: string) => {
+		setFormData((prev) => ({ ...prev, category: value }));
+	};
+
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
-		const newMenuItem = {
-			...newItem,
-			price: newItem.price,
-		};
 		try {
-			console.table(newMenuItem);
-			await updateDishDetails({ ...newMenuItem });
-			success("Item added successfully! 🎉");
+			await updateDishDetails(formData);
+			success("Dish updated successfully!");
+			toogleFetch();
 		} catch (err) {
-			const message =
-				(err as AxiosError<{ message?: string }>)?.response?.data
-					?.message ??
-				(err as Error)?.message ??
-				"Failed to add item 😵";
-			error(message);
+			error("Failed to update dish. Please try again.");
+			console.error("Update error:", err);
 		}
-		setNewItem({
-			_id: "",
-			name: "",
-			description: "",
-			price: 0,
-			category: "",
-			image: "",
-			quantity: 0,
-		});
-		setImagePreview(null);
 	};
 
 	return (
 		<Dialog>
 			<DialogTrigger asChild>
-				<Button size="sm" variant="outline">
+				<Button
+					size="sm"
+					variant="outline"
+					aria-label="Edit dish details"
+				>
 					<Edit className="h-4 w-4" />
 				</Button>
 			</DialogTrigger>
-			<DialogContent>
+
+			<DialogContent className="max-h-[90vh] overflow-y-auto">
 				<DialogHeader>
-					<DialogTitle className="text-2xl font-bold mb-4">
-						Edit your dish details
+					<DialogTitle className="text-2xl font-bold">
+						Edit Dish Details
 					</DialogTitle>
-					{newItem._id}
 				</DialogHeader>
-				<form className="space-y-4">
-					<div className="space-y-2">
-						<Label htmlFor="name">Item Name</Label>
-						<Input
-							id="name"
-							placeholder="Enter item name"
-							name="name"
-							value={newItem.name}
-							onChange={handleInputChange}
-						/>
+
+				<form onSubmit={handleSubmit} className="space-y-4 mt-4">
+					{/* Basic Information */}
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<div className="space-y-2">
+							<Label htmlFor="edit-name">Name*</Label>
+							<Input
+								id="edit-name"
+								name="name"
+								value={formData.name}
+								onChange={handleInputChange}
+								placeholder="Dish name"
+								required
+							/>
+						</div>
+
+						<div className="space-y-2">
+							<Label htmlFor="edit-price">Price*</Label>
+							<Input
+								id="edit-price"
+								name="price"
+								type="number"
+								min="0"
+								step="0.01"
+								value={formData.price}
+								onChange={handleInputChange}
+								placeholder="0.00"
+								required
+							/>
+						</div>
 					</div>
 
 					<div className="space-y-2">
-						<Label htmlFor="description">Description</Label>
+						<Label htmlFor="edit-description">Description*</Label>
 						<Input
-							id="description"
-							placeholder="Enter description"
+							id="edit-description"
 							name="description"
-							value={newItem.description}
+							value={formData.description}
 							onChange={handleInputChange}
+							placeholder="Brief description"
+							required
 						/>
+					</div>
+					<div className="space-y-2">
+						<Label htmlFor="edit prepTime">Prepreation Time*</Label>
+						<Input
+							id="prepTime"
+							name="prepTime"
+							value={formData.prepTime}
+							onChange={handleInputChange}
+							placeholder="Estimated time for dish prepration"
+							required
+						/>
+					</div>
+					{/* Inventory */}
+					<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+						<div className="space-y-2">
+							<Label htmlFor="edit-quantity">Quantity*</Label>
+							<Input
+								id="edit-quantity"
+								name="quantity"
+								type="number"
+								min="0"
+								value={formData.quantity}
+								onChange={handleInputChange}
+								placeholder="0"
+								required
+							/>
+						</div>
+
+						<div className="space-y-2">
+							<Label htmlFor="edit-calories">Calories</Label>
+							<Input
+								id="edit-calories"
+								name="calories"
+								type="number"
+								min="0"
+								value={formData.calories}
+								onChange={handleInputChange}
+								placeholder="0"
+							/>
+						</div>
+
+						<div className="space-y-2">
+							<Label htmlFor="edit-category">Category*</Label>
+							<Select
+								value={formData.category}
+								onValueChange={handleCategoryChange}
+								required
+							>
+								<SelectTrigger id="edit-category">
+									<SelectValue placeholder="Select category" />
+								</SelectTrigger>
+								<SelectContent>
+									{categories.map((category) => (
+										<SelectItem
+											key={category}
+											value={category}
+										>
+											{category}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						</div>
 					</div>
 
-					<div className="space-y-2">
-						<Label htmlFor="price">Price</Label>
-						<Input
-							id="price"
-							placeholder="Enter price"
-							name="price"
-							type="number"
-							value={newItem.price}
-							onChange={handleInputChange}
-						/>
+					{/* Toggles */}
+					<div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+						<div className="flex items-center space-x-2">
+							<Switch
+								id="edit-vegetarian"
+								checked={formData.isVegetarian}
+								onCheckedChange={handleSwitchToggle(
+									"isVegetarian"
+								)}
+							/>
+							<Label htmlFor="edit-vegetarian">Vegetarian</Label>
+						</div>
+
+						<div className="flex items-center space-x-2">
+							<Switch
+								id="edit-popular"
+								checked={formData.isPopular}
+								onCheckedChange={handleSwitchToggle(
+									"isPopular"
+								)}
+							/>
+							<Label htmlFor="edit-popular">Popular</Label>
+						</div>
+
+						<div className="flex items-center space-x-2">
+							<Switch
+								id="edit-available"
+								checked={formData.available}
+								onCheckedChange={handleSwitchToggle(
+									"available"
+								)}
+							/>
+							<Label htmlFor="edit-available">Available</Label>
+						</div>
 					</div>
 
+					{/* Image Upload */}
 					<div className="space-y-2">
-						<Label htmlFor="quantity">Quantity</Label>
+						<Label htmlFor="edit-image">Dish Image</Label>
 						<Input
-							id="quantity"
-							placeholder="Enter dish quantity..."
-							name="quantity"
-							type="number"
-							value={newItem.quantity}
-							onChange={handleInputChange}
-						/>
-					</div>
-					<div className="space-y-2">
-						<Label htmlFor="calories">Calories</Label>
-						<Input
-							id="calories"
-							placeholder="Enter calories quantity..."
-							name="calories"
-							type="number"
-							value={newItem.quantity}
-							onChange={handleInputChange}
-						/>
-					</div>
-					<div className="space-y-2">
-						<Label htmlFor="quantity">Is Vegetarian</Label>
-						<Input
-							id="quantity"
-							placeholder="Enter dish quantity..."
-							name="quantity"
-							type="number"
-							value={newItem.quantity}
-							onChange={handleInputChange}
-						/>
-					</div>
-					<div className="space-y-2">
-						<Label htmlFor="quantity">Is Popular</Label>
-						<Input
-							id="quantity"
-							placeholder="Enter dish quantity..."
-							name="quantity"
-							type="number"
-							value={newItem.quantity}
-							onChange={handleInputChange}
-						/>
-					</div>
-
-					<div className="space-y-2">
-						<Label htmlFor="category">Category</Label>
-						<Select
-							onValueChange={(value) =>
-								setNewItem((prev) => ({
-									...prev,
-									category: value,
-								}))
-							}
-							value={newItem.category}
-						>
-							<SelectTrigger className="w-full" id="category">
-								<SelectValue placeholder="Select Category" />
-							</SelectTrigger>
-							<SelectContent>
-								{categories.map((category) => (
-									<SelectItem key={category} value={category}>
-										{category}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-					</div>
-
-					<div className="space-y-2">
-						<Label htmlFor="image">Upload Image</Label>
-						<Input
-							id="image"
+							id="edit-image"
 							type="file"
 							accept="image/*"
-							onChange={handleImageChange}
+							onChange={handleImageUpload}
+							className="cursor-pointer"
 						/>
 						{imagePreview && (
-							<img
-								src={imagePreview}
-								alt="Preview"
-								className="w-full h-40 object-cover rounded-lg border"
-							/>
+							<div className="mt-2">
+								<p className="text-sm text-muted-foreground mb-1">
+									Image Preview:
+								</p>
+								<img
+									src={imagePreview}
+									alt="Dish preview"
+									className="w-full h-48 object-cover rounded-lg border"
+								/>
+							</div>
 						)}
 					</div>
 
 					<Button
-						className="w-full bg-amber-600 hover:bg-amber-700"
-						onClick={handleAddItem}
+						type="submit"
+						className="w-full mt-6"
+						disabled={isLoading}
 					>
-						{isLoading ? "Updating..." : "Update Item"}
+						{isLoading ? "Saving Changes..." : "Save Changes"}
 					</Button>
 				</form>
 			</DialogContent>
@@ -397,237 +456,338 @@ const AddMenuItem = ({ toogleFetch }: AddMenuItemInterface) => {
 	const { addDishToMenu, isLoading } = useMenu();
 	const { error, success } = useToast();
 
-	const [newItem, setNewItem] = useState({
+	const [formData, setFormData] = useState({
 		name: "",
 		description: "",
 		price: "",
 		category: "",
 		image: "",
 		quantity: 0,
+		calories: 0,
+		isVegetarian: false,
+		isPopular: false,
+		available: true,
+		prepTime: "",
 	});
 
 	const [imagePreview, setImagePreview] = useState<string | null>(null);
+	const [isOpen, setIsOpen] = useState(false);
 
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const { name, value } = e.target;
-		setNewItem((prev) => ({
+		const { name, value, type } = e.target;
+		setFormData((prev) => ({
 			...prev,
-			[name]: value,
+			[name]: type === "number" ? Number(value) : value,
 		}));
 	};
 
-	const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target.files?.[0];
+	const handleSwitchToggle =
+		(field: keyof typeof formData) => (checked: boolean) => {
+			setFormData((prev) => ({ ...prev, [field]: checked }));
+		};
 
+	const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0];
 		if (!file) return;
 
-		if (!file.type.match("image.*")) {
-			error("Please select an image file");
+		if (!file.type.startsWith("image/")) {
+			error("Please select a valid image file (JPEG, PNG, etc.)");
+			return;
+		}
+
+		if (file.size > 2 * 1024 * 1024) {
+			error("Image size should be less than 2MB");
 			return;
 		}
 
 		const reader = new FileReader();
-
-		reader.onloadend = () => {
-			const base64String = reader.result?.toString() as string;
-			setImagePreview(base64String);
-			console.log(base64String);
-
-			setNewItem((prev) => ({
-				...prev,
-				image: base64String,
-			}));
+		reader.onload = () => {
+			const result = reader.result as string;
+			setImagePreview(result);
+			setFormData((prev) => ({ ...prev, image: result }));
 		};
-
-		reader.onerror = () => {
-			console.error("Error reading file");
-		};
-
+		reader.onerror = () => error("Error reading image file");
 		reader.readAsDataURL(file);
 	};
 
-	const handleAddItem = async (e: React.FormEvent) => {
-		e.preventDefault();
-		if (
-			!newItem.name ||
-			!newItem.price ||
-			!newItem.category ||
-			!newItem.image ||
-			!newItem.description ||
-			!newItem.quantity
-		) {
-			error("Please fill in all required fields and upload an image!");
-			return;
-		}
+	const handleCategoryChange = (value: string) => {
+		setFormData((prev) => ({ ...prev, category: value }));
+	};
 
-		const newMenuItem = {
-			...newItem,
-			price: parseFloat(newItem.price),
-		};
-		try {
-			console.table(newMenuItem);
-			await addDishToMenu(newMenuItem);
-			success("Item added successfully! 🎉");
-		} catch (err) {
-			const message =
-				(err as AxiosError<{ message?: string }>)?.response?.data
-					?.message ??
-				(err as Error)?.message ??
-				"Failed to add item 😵";
-			error(message);
-		}
-		setNewItem({
+	const resetForm = () => {
+		setFormData({
 			name: "",
 			description: "",
 			price: "",
 			category: "",
 			image: "",
 			quantity: 0,
+			calories: 0,
+			isVegetarian: false,
+			isPopular: false,
+			available: true,
 		});
 		setImagePreview(null);
-		toogleFetch();
+	};
+
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+
+		if (!formData.image) {
+			error("Please upload an image of the dish");
+			return;
+		}
+		console.log(formData);
+
+		try {
+			await addDishToMenu({
+				...formData,
+				price: parseFloat(formData.price),
+			});
+			success("Menu item added successfully!");
+			resetForm();
+			toogleFetch();
+			setIsOpen(false);
+		} catch (err) {
+			error("Failed to add menu item. Please try again.");
+			console.error("Add item error:", err);
+		}
 	};
 
 	return (
-		<Dialog>
+		<Dialog open={isOpen} onOpenChange={setIsOpen}>
 			<DialogTrigger asChild>
-				<Button className="bg-amber-600 hover:bg-amber-700 dark:text-white">
-					<Plus className="size-4" />
+				<Button
+					className="bg-amber-600 hover:bg-amber-700 text-white"
+					onClick={() => setIsOpen(true)}
+				>
+					<Plus className="size-4 mr-2" />
 					Add Menu Item
 				</Button>
 			</DialogTrigger>
-			<DialogContent>
+
+			<DialogContent className="max-h-[90vh] overflow-y-auto">
 				<DialogHeader>
-					<DialogTitle className="text-2xl font-bold mb-4">
+					<DialogTitle className="text-2xl font-bold">
 						Add New Menu Item
 					</DialogTitle>
+					<p className="text-sm text-muted-foreground">
+						Fill in the details below to add a new item to your menu
+					</p>
 				</DialogHeader>
-				<form className="space-y-4">
-					<div className="space-y-2">
-						<Label htmlFor="name">Item Name</Label>
-						<Input
-							id="name"
-							placeholder="Enter item name"
-							name="name"
-							value={newItem.name}
-							onChange={handleInputChange}
-						/>
+
+				<form onSubmit={handleSubmit} className="space-y-4 mt-4">
+					{/* Basic Information */}
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<div className="space-y-2">
+							<Label htmlFor="name">Name*</Label>
+							<Input
+								id="name"
+								name="name"
+								value={formData.name}
+								onChange={handleInputChange}
+								placeholder="e.g., Margherita Pizza"
+								required
+							/>
+						</div>
+
+						<div className="space-y-2">
+							<Label htmlFor="price">Price*</Label>
+							<Input
+								id="price"
+								name="price"
+								type="number"
+								min="0"
+								step="0.01"
+								value={formData.price}
+								onChange={handleInputChange}
+								placeholder="0.00"
+								required
+							/>
+						</div>
 					</div>
 
 					<div className="space-y-2">
-						<Label htmlFor="description">Description</Label>
+						<Label htmlFor="description">Description*</Label>
 						<Input
 							id="description"
-							placeholder="Enter description"
 							name="description"
-							value={newItem.description}
+							value={formData.description}
 							onChange={handleInputChange}
+							placeholder="Brief description of the dish"
+							required
+						/>
+					</div>
+					<div className="space-y-2">
+						<Label htmlFor="prepTime">Prepreation Time*</Label>
+						<Input
+							id="prepTime"
+							name="prepTime"
+							value={formData.prepTime}
+							onChange={handleInputChange}
+							placeholder="Estimated time for dish prepration"
+							required
 						/>
 					</div>
 
-					<div className="space-y-2">
-						<Label htmlFor="price">Price</Label>
-						<Input
-							id="price"
-							placeholder="Enter price"
-							name="price"
-							type="number"
-							value={newItem.price}
-							onChange={handleInputChange}
-						/>
-					</div>
-
-					<div className="space-y-2">
-						<Label htmlFor="quantity">Quantity</Label>
-						<Input
-							id="quantity"
-							placeholder="Enter dish quantity..."
-							name="quantity"
-							type="number"
-							value={newItem.quantity}
-							onChange={handleInputChange}
-						/>
-					</div>
-					<div className="space-y-2">
-						<Label htmlFor="calories">Calories</Label>
-						<Input
-							id="calories"
-							placeholder="Enter calories quantity..."
-							name="calories"
-							type="number"
-							value={newItem.quantity}
-							onChange={handleInputChange}
-						/>
-					</div>
-					<div className="space-y-2">
-						<Label htmlFor="quantity">Is Vegetarian</Label>
-						<Input
-							id="quantity"
-							placeholder="Enter dish quantity..."
-							name="quantity"
-							type="number"
-							value={newItem.quantity}
-							onChange={handleInputChange}
-						/>
-					</div>
-					<div className="space-y-2">
-						<Label htmlFor="quantity">Is Popular</Label>
-						<Input
-							id="quantity"
-							placeholder="Enter dish quantity..."
-							name="quantity"
-							type="number"
-							value={newItem.quantity}
-							onChange={handleInputChange}
-						/>
-					</div>
-
-					<div className="space-y-2">
-						<Label htmlFor="category">Category</Label>
-						<Select
-							onValueChange={(value) =>
-								setNewItem((prev) => ({
-									...prev,
-									category: value,
-								}))
-							}
-						>
-							<SelectTrigger className="w-full" id="category">
-								<SelectValue placeholder="Select Category" />
-							</SelectTrigger>
-							<SelectContent>
-								{categories.map((category) => (
-									<SelectItem key={category} value={category}>
-										{category}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-					</div>
-
-					<div className="space-y-2">
-						<Label htmlFor="image">Upload Image</Label>
-						<Input
-							id="image"
-							type="file"
-							accept="image/*"
-							onChange={handleImageChange}
-						/>
-						{imagePreview && (
-							<img
-								src={imagePreview}
-								alt="Preview"
-								className="w-full h-40 object-cover rounded-lg border"
+					{/* Inventory and Nutrition */}
+					<div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+						<div className="space-y-2">
+							<Label htmlFor="quantity">Quantity*</Label>
+							<Input
+								id="quantity"
+								name="quantity"
+								type="number"
+								min="0"
+								value={formData.quantity}
+								onChange={handleInputChange}
+								placeholder="Available quantity"
+								required
 							/>
+						</div>
+
+						<div className="space-y-2">
+							<Label htmlFor="calories">Calories</Label>
+							<Input
+								id="calories"
+								name="calories"
+								type="number"
+								min="0"
+								value={formData.calories}
+								onChange={handleInputChange}
+								placeholder="Calorie count"
+							/>
+						</div>
+
+						<div className="space-y-2">
+							<Label htmlFor="category">Category*</Label>
+							<Select
+								value={formData.category}
+								onValueChange={handleCategoryChange}
+								required
+							>
+								<SelectTrigger>
+									<SelectValue placeholder="Select category" />
+								</SelectTrigger>
+								<SelectContent>
+									{categories.map((category) => (
+										<SelectItem
+											key={category}
+											value={category}
+										>
+											{category}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+						</div>
+					</div>
+
+					{/* Toggles */}
+					<div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+						<div className="flex items-center justify-between p-3 border rounded-lg">
+							<Label htmlFor="vegetarian">Vegetarian</Label>
+							<Switch
+								id="vegetarian"
+								checked={formData.isVegetarian}
+								onCheckedChange={handleSwitchToggle(
+									"isVegetarian"
+								)}
+							/>
+						</div>
+
+						<div className="flex items-center justify-between p-3 border rounded-lg">
+							<Label htmlFor="popular">Popular</Label>
+							<Switch
+								id="popular"
+								checked={formData.isPopular}
+								onCheckedChange={handleSwitchToggle(
+									"isPopular"
+								)}
+							/>
+						</div>
+
+						<div className="flex items-center justify-between p-3 border rounded-lg">
+							<Label htmlFor="available">Available</Label>
+							<Switch
+								id="available"
+								checked={formData.available}
+								onCheckedChange={handleSwitchToggle(
+									"available"
+								)}
+							/>
+						</div>
+					</div>
+
+					{/* Image Upload */}
+					<div className="space-y-2">
+						<Label htmlFor="image">Dish Image*</Label>
+						<div className="flex items-center gap-4">
+							<Label
+								htmlFor="image"
+								className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-accent transition-colors"
+							>
+								<div className="flex flex-col items-center justify-center pt-5 pb-6">
+									<Upload className="h-8 w-8 text-muted-foreground mb-2" />
+									<p className="text-sm text-muted-foreground">
+										{imagePreview
+											? "Change image"
+											: "Click to upload"}
+									</p>
+									<p className="text-xs text-muted-foreground">
+										PNG, JPG (Max. 2MB)
+									</p>
+								</div>
+								<Input
+									id="image"
+									type="file"
+									accept="image/*"
+									onChange={handleImageUpload}
+									className="hidden"
+								/>
+							</Label>
+						</div>
+						{imagePreview && (
+							<div className="mt-2">
+								<p className="text-sm text-muted-foreground mb-1">
+									Preview:
+								</p>
+								<img
+									src={imagePreview}
+									alt="Dish preview"
+									className="w-full h-48 object-cover rounded-lg border"
+								/>
+							</div>
 						)}
 					</div>
 
-					<Button
-						className="w-full bg-amber-600 hover:bg-amber-700"
-						onClick={handleAddItem}
-					>
-						{isLoading ? "Loading..." : "Add Item"}
-					</Button>
+					<div className="flex gap-2 pt-4">
+						<Button
+							type="button"
+							variant="outline"
+							className="flex-1"
+							onClick={() => {
+								resetForm();
+								setIsOpen(false);
+							}}
+						>
+							Cancel
+						</Button>
+						<Button
+							type="submit"
+							className="flex-1 bg-amber-600 hover:bg-amber-700"
+							disabled={isLoading}
+						>
+							{isLoading ? (
+								<>
+									<Loader2 className="mr-2 h-4 w-4 animate-spin" />
+									Adding...
+								</>
+							) : (
+								"Add Item"
+							)}
+						</Button>
+					</div>
 				</form>
 			</DialogContent>
 		</Dialog>

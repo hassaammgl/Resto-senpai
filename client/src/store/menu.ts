@@ -33,7 +33,7 @@ export const useMenu = create<MenuState>()(
 						}
 					);
 
-					set({ menuItems: [...data.data] });
+					set({ menuItems: [data.data] });
 				} catch (err: any) {
 					const errorMessage = getErrorMessage(err);
 					set({ error: errorMessage });

@@ -29,17 +29,46 @@ export class MenuService {
     }
 
     static async addDishItem(data) {
-        const { name, description, price, category, image, quantity } = data;
+        // const { name, description, price, category, image, quantity  } = data;
+        const {
+            name,
+            description,
+            price,
+            category,
+            image,
+            available,
+            quantity,
+            calories,
+            isVegetarian,
+            isPopular,
+            prepTime,
+        } = data;
         try {
             const imgUrl = await Upload.uploadImg(image);
-            console.log(name, description, price, category, imgUrl, quantity);
+            console.log(name,
+                description,
+                price,
+                category,
+                image,
+                available,
+                quantity,
+                calories,
+                isVegetarian,
+                isPopular,
+                prepTime);
+
             const newDish = new Dish({
                 name,
                 description,
                 price,
                 category,
+                available,
+                quantity,
+                calories,
+                isVegetarian,
+                isPopular,
+                prepTime,
                 image: imgUrl,
-                quantity
             })
             await newDish.save();
             return {
@@ -50,12 +79,44 @@ export class MenuService {
         }
     }
     static async updateDishItem(data) {
-        const { _id, name, description, price, category, image, quantity } = data;
+        const { _id, name,
+            description,
+            price,
+            category,
+            image,
+            available,
+            quantity,
+            calories,
+            isVegetarian,
+            isPopular,
+            prepTime } = data;
         try {
 
             if (this.#isValidUrl(image)) {
-                console.log(name, description, price, category, image, quantity, _id);
-                const updatedDish = await Dish.findByIdAndUpdate({ _id }, { name, description, price, category, image, quantity })
+                console.log(name,
+                    description,
+                    price,
+                    category,
+                    image,
+                    available,
+                    quantity,
+                    calories,
+                    isVegetarian,
+                    isPopular,
+                    prepTime, _id);
+                const updatedDish = await Dish.findByIdAndUpdate({ _id }, {
+                    name,
+                    description,
+                    price,
+                    category,
+                    image,
+                    available,
+                    quantity,
+                    calories,
+                    isVegetarian,
+                    isPopular,
+                    prepTime
+                })
                 updatedDish.save();
                 console.log(updatedDish);
                 return {
@@ -65,7 +126,19 @@ export class MenuService {
             else {
                 const imgUrl = await Upload.uploadImg(image);
                 console.log(name, description, price, category, imgUrl, quantity, _id);
-                const updatedDish = await Dish.findByIdAndUpdate({ _id }, { name, description, price, category, imgUrl, quantity })
+                const updatedDish = await Dish.findByIdAndUpdate({ _id }, {
+                    name,
+                    description,
+                    price,
+                    category,
+                    image: imgUrl,
+                    available,
+                    quantity,
+                    calories,
+                    isVegetarian,
+                    isPopular,
+                    prepTime
+                })
                 updatedDish.save();
                 console.log(updatedDish);
                 return {

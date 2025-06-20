@@ -6,7 +6,12 @@ export const addDish = Joi.object({
     price: Joi.number().required(),
     category: Joi.string().required(),
     image: Joi.string().required(),
-    quantity: Joi.number().required()
+    prepTime: Joi.string().required(),
+    quantity: Joi.number().required(),
+    available: Joi.boolean(),
+    calories: Joi.number(),
+    isVegetarian: Joi.boolean(),
+    isPopular: Joi.boolean(),
 })
 
 export const updateDish = Joi.object({
@@ -16,7 +21,12 @@ export const updateDish = Joi.object({
     price: Joi.number().required(),
     category: Joi.string().required(),
     image: Joi.string().required(),
-    quantity: Joi.number().required()
+    quantity: Joi.number().required(),
+    prepTime: Joi.string().required(),
+    available: Joi.boolean(),
+    calories: Joi.number(),
+    isVegetarian: Joi.boolean(),
+    isPopular: Joi.boolean(),
 })
 
 export const deleteDish = Joi.object({

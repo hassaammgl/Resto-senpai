@@ -55,6 +55,10 @@ export interface DishData {
 	image: string;
 	available?: boolean;
 	quantity?: number;
+	calories: number;
+	isVegetarian: boolean;
+	isPopular: boolean;
+	prepTime: string;
 }
 
 export interface MenuState {
