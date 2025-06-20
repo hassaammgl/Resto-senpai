@@ -562,6 +562,7 @@ const AddMenuItem = ({ toogleFetch }: AddMenuItemInterface) => {
 			isVegetarian: false,
 			isPopular: false,
 			available: true,
+			prepTime: ""
 		});
 		setImagePreview(null);
 	};
