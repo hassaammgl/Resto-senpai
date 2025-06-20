@@ -16,7 +16,15 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { Plus, Edit, Trash2, Upload, Loader2 } from "lucide-react";
+import {
+	Plus,
+	Edit,
+	Trash2,
+	Upload,
+	Loader2,
+	Clock,
+	Package,
+} from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/useToast";
@@ -88,56 +96,84 @@ const Menu = () => {
 						{menuItems.map((item) => (
 							<div
 								key={item._id}
-								className="bg-white p-4 dark:bg-black border-accent rounded-lg shadow-md border overflow-hidden hover:shadow-lg transition-shadow"
+								className="bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
 							>
 								{item.image && (
-									<img
-										src={item.image}
-										alt={item.name}
-										className="w-full rounded-xl h-80 object-cover"
-									/>
-								)}
-								<div className="p-6">
-									<div className="flex justify-between items-start mb-4">
-										<div className="flex gap-2">
-											<Badge
-												variant={
-													item.available
-														? "default"
-														: "secondary"
-												}
-											>
-												{item.available
-													? "Available"
-													: "Out of Stock"}
-											</Badge>
-											<Badge variant="outline">
-												{item.category}
-											</Badge>
+									<div className="relative h-48 w-full">
+										<img
+											src={item.image}
+											alt={item.name}
+											className="w-full h-full object-cover"
+										/>
+										<div className="absolute top-2 right-2 flex gap-1">
+											{item.isPopular && (
+												<Badge
+													variant="default"
+													className="bg-green-600"
+												>
+													Popular
+												</Badge>
+											)}
 											{item.isVegetarian && (
-												<Badge variant="secondary">
-													Vegetarian
+												<Badge
+													variant="default"
+													className="bg-emerald-600"
+												>
+													Veg
 												</Badge>
 											)}
 										</div>
-										<span className="font-bold">
-											Quantity
-											<span className="text-amber-600 ml-4">
-												{item.quantity}
-											</span>
+									</div>
+								)}
+
+								<div className="p-4">
+									<div className="flex justify-between items-start mb-3">
+										<h3 className="text-lg font-bold dark:text-white text-gray-900 line-clamp-1">
+											{item.name}
+										</h3>
+										<span className="text-lg font-bold text-amber-600 whitespace-nowrap">
+											Rs. {item.price}
 										</span>
 									</div>
 
-									<h3 className="text-xl font-bold dark:text-white text-gray-900 mb-2">
-										{item.name}
-									</h3>
-									<p className="text-gray-600 dark:text-white/70 text-sm mb-4">
+									<p className="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">
 										{item.description}
 									</p>
+
+									<div className="flex flex-wrap gap-2 mb-4">
+										<Badge
+											variant={
+												item.available
+													? "default"
+													: "destructive"
+											}
+										>
+											{item.available
+												? "In Stock"
+												: "Out of Stock"}
+										</Badge>
+										<Badge variant="outline">
+											{item.category}
+										</Badge>
+										{item.prepTime && (
+											<Badge
+												variant="outline"
+												className="flex items-center gap-1"
+											>
+												<Clock className="h-3 w-3" />
+												{item.prepTime}
+											</Badge>
+										)}
+									</div>
+
 									<div className="flex justify-between items-center">
-										<span className="text-2xl font-bold text-amber-600">
-											Rs. {item.price}
-										</span>
+										<div className="flex items-center gap-2">
+											<Package className="h-4 w-4 text-gray-500" />
+											<span className="text-sm text-gray-500 dark:text-gray-400">
+												{item.quantity} available
+											</span>
+										</div>
+
 										<div className="flex gap-2">
 											<EditDishDetails
 												item={item}
