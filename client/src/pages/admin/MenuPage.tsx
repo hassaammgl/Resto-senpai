@@ -302,6 +302,39 @@ const EditDishDetails = ({ item }: { item: DishData }) => {
 							onChange={handleInputChange}
 						/>
 					</div>
+					<div className="space-y-2">
+						<Label htmlFor="calories">Calories</Label>
+						<Input
+							id="calories"
+							placeholder="Enter calories quantity..."
+							name="calories"
+							type="number"
+							value={newItem.quantity}
+							onChange={handleInputChange}
+						/>
+					</div>
+					<div className="space-y-2">
+						<Label htmlFor="quantity">Is Vegetarian</Label>
+						<Input
+							id="quantity"
+							placeholder="Enter dish quantity..."
+							name="quantity"
+							type="number"
+							value={newItem.quantity}
+							onChange={handleInputChange}
+						/>
+					</div>
+					<div className="space-y-2">
+						<Label htmlFor="quantity">Is Popular</Label>
+						<Input
+							id="quantity"
+							placeholder="Enter dish quantity..."
+							name="quantity"
+							type="number"
+							value={newItem.quantity}
+							onChange={handleInputChange}
+						/>
+					</div>
 
 					<div className="space-y-2">
 						<Label htmlFor="category">Category</Label>
@@ -506,6 +539,39 @@ const AddMenuItem = ({ toogleFetch }: AddMenuItemInterface) => {
 
 					<div className="space-y-2">
 						<Label htmlFor="quantity">Quantity</Label>
+						<Input
+							id="quantity"
+							placeholder="Enter dish quantity..."
+							name="quantity"
+							type="number"
+							value={newItem.quantity}
+							onChange={handleInputChange}
+						/>
+					</div>
+					<div className="space-y-2">
+						<Label htmlFor="calories">Calories</Label>
+						<Input
+							id="calories"
+							placeholder="Enter calories quantity..."
+							name="calories"
+							type="number"
+							value={newItem.quantity}
+							onChange={handleInputChange}
+						/>
+					</div>
+					<div className="space-y-2">
+						<Label htmlFor="quantity">Is Vegetarian</Label>
+						<Input
+							id="quantity"
+							placeholder="Enter dish quantity..."
+							name="quantity"
+							type="number"
+							value={newItem.quantity}
+							onChange={handleInputChange}
+						/>
+					</div>
+					<div className="space-y-2">
+						<Label htmlFor="quantity">Is Popular</Label>
 						<Input
 							id="quantity"
 							placeholder="Enter dish quantity..."

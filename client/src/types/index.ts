@@ -67,3 +67,18 @@ export interface MenuState {
 	getAllDishes: () => Promise<void>;
 	clearError: () => void;
 }
+
+interface CartData extends DishData {
+	rating: number;
+	calories: number;
+	isVegetarian: boolean;
+	isPopular: boolean;
+}
+
+export interface CartState {
+	cartItems: CartData[];
+	isLoading: boolean;
+	error: string | null;
+	getAllDishes: () => Promise<void>;
+	clearError: () => void;
+}
