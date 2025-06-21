@@ -1,12 +1,5 @@
 import CustomerLayout from "@/layout/CustomerLayout";
 import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,102 +10,31 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
-import { ShoppingCart, Plus, Search, Filter, Clock, Star } from "lucide-react";
-import { useState } from "react";
+import {
+	ShoppingCart, Search, Filter,
+	Trash2,
+	Clock,
+	Package,
+} from "lucide-react";
+import { useState, useEffect } from "react";
+import { useCart } from "@/store/cart";
 
 const CustomerMenuPage = () => {
+
+	const { dishes, getDishes } = useCart()
+
 	const [searchTerm, setSearchTerm] = useState("");
 	const [selectedCategory, setSelectedCategory] = useState("all");
 	const [sortBy, setSortBy] = useState("name");
 
-	const menuItems = [
-		{
-			id: "1",
-			name: "Caesar Salad",
-			description:
-				"Fresh romaine lettuce, parmesan cheese, croutons with house-made dressing",
-			price: 12.99,
-			category: "Appetizers",
-			image: "🥗",
-			rating: 4.5,
-			prepTime: "10-15 min",
-			calories: 280,
-			isVegetarian: true,
-			isPopular: true,
-		},
-		{
-			id: "2",
-			name: "Grilled Salmon",
-			description:
-				"Atlantic salmon with lemon butter sauce, served with seasonal vegetables",
-			price: 24.99,
-			category: "Main Course",
-			image: "🐟",
-			rating: 4.8,
-			prepTime: "20-25 min",
-			calories: 420,
-			isVegetarian: false,
-			isPopular: true,
-		},
-		{
-			id: "3",
-			name: "Margherita Pizza",
-			description: "Fresh tomatoes, mozzarella, basil on thin crust",
-			price: 18.99,
-			category: "Main Course",
-			image: "🍕",
-			rating: 4.6,
-			prepTime: "15-20 min",
-			calories: 680,
-			isVegetarian: true,
-			isPopular: false,
-		},
-		{
-			id: "4",
-			name: "Chocolate Cake",
-			description:
-				"Rich chocolate cake with vanilla ice cream and berry compote",
-			price: 8.99,
-			category: "Desserts",
-			image: "🍰",
-			rating: 4.7,
-			prepTime: "5 min",
-			calories: 520,
-			isVegetarian: true,
-			isPopular: true,
-		},
-		{
-			id: "5",
-			name: "Beef Burger",
-			description:
-				"Angus beef patty with lettuce, tomato, cheese, and fries",
-			price: 16.99,
-			category: "Main Course",
-			image: "🍔",
-			rating: 4.4,
-			prepTime: "15-20 min",
-			calories: 750,
-			isVegetarian: false,
-			isPopular: true,
-		},
-		{
-			id: "6",
-			name: "Mushroom Soup",
-			description: "Creamy wild mushroom soup with herbs and truffle oil",
-			price: 9.99,
-			category: "Appetizers",
-			image: "🍲",
-			rating: 4.3,
-			prepTime: "8-12 min",
-			calories: 220,
-			isVegetarian: true,
-			isPopular: false,
-		},
-	];
+	useEffect(() => {
+		getDishes()
+	}, [])
+
 
 	const categories = ["all", "Appetizers", "Main Course", "Desserts"];
 
-	const filteredItems = menuItems
+	const filteredItems = dishes
 		.filter(
 			(item) =>
 				(selectedCategory === "all" ||
@@ -134,7 +56,7 @@ const CustomerMenuPage = () => {
 			}
 		});
 
-	const addToCart = (item: (typeof menuItems)[0]) => {
+	const addToCart = (item: (typeof dishes)[0]) => {
 		console.log(item);
 	};
 	const cartItemCount = 0;
@@ -247,67 +169,105 @@ const CustomerMenuPage = () => {
 				{/* Menu Items Grid */}
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 					{filteredItems.map((item) => (
-						<Card
-							key={item.id}
-							className="hover:shadow-lg transition-shadow relative"
+						<div
+							key={item._id}
+							className="bg-white dark:bg-black border border-gray-200 dark:border-gray-800 rounded-lg overflow-hidden hover:shadow-lg transition-shadow"
 						>
-							{item.isPopular && (
-								<Badge className="absolute top-4 left-4 bg-orange-500 text-white">
-									Popular
-								</Badge>
-							)}
-							<CardHeader>
-								<div className="text-4xl text-center mb-4">
-									{item.image}
+							{item.image && (
+								<div className="relative h-48 w-full">
+									<img
+										src={item.image}
+										alt={item.name}
+										className="w-full h-full object-cover"
+									/>
+									<div className="absolute top-2 right-2 flex gap-1">
+										{item.isPopular && (
+											<Badge
+												variant="default"
+												className="bg-green-600"
+											>
+												Popular
+											</Badge>
+										)}
+										{item.isVegetarian && (
+											<Badge
+												variant="default"
+												className="bg-emerald-600"
+											>
+												Veg
+											</Badge>
+										)}
+									</div>
 								</div>
-								<CardTitle className="flex justify-between items-start">
-									<span>{item.name}</span>
-									<Badge variant="secondary">
+							)}
+
+							<div className="p-4">
+								<div className="flex justify-between items-start mb-3">
+									<h3 className="text-lg font-bold dark:text-white text-gray-900 line-clamp-1">
+										{item.name}
+									</h3>
+									<span className="text-lg font-bold text-amber-600 whitespace-nowrap">
+										Rs. {item.price}
+									</span>
+								</div>
+
+								<p className="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">
+									{item.description}
+								</p>
+
+								<div className="flex flex-wrap gap-2 mb-4">
+									<Badge
+										variant={
+											item.available
+												? "default"
+												: "destructive"
+										}
+									>
+										{item.available
+											? "In Stock"
+											: "Out of Stock"}
+									</Badge>
+									<Badge variant="outline">
 										{item.category}
 									</Badge>
-								</CardTitle>
-								<CardDescription>
-									{item.description}
-								</CardDescription>
-
-								<div className="flex items-center gap-4 text-sm text-gray-600 mt-2">
-									<div className="flex items-center gap-1">
-										<Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-										<span>{item.rating}</span>
-									</div>
-									<div className="flex items-center gap-1">
-										<Clock className="h-4 w-4" />
-										<span>{item.prepTime}</span>
-									</div>
-									<div className="flex items-center gap-1">
-										<span>{item.calories} cal</span>
-									</div>
-									{item.isVegetarian && (
+									{item.prepTime && (
 										<Badge
 											variant="outline"
-											className="text-green-600"
+											className="flex items-center gap-1"
 										>
-											Vegetarian
+											<Clock className="h-3 w-3" />
+											{item.prepTime}
 										</Badge>
 									)}
 								</div>
-							</CardHeader>
-							<CardContent>
+
 								<div className="flex justify-between items-center">
-									<span className="text-2xl font-bold text-green-600">
-										${item.price}
-									</span>
-									<Button
-										onClick={() => addToCart(item)}
-										size="sm"
-										className="bg-green-600 hover:bg-green-700"
-									>
-										<Plus className="h-4 w-4 mr-1" />
-										Add to Cart
-									</Button>
+									<div className="flex items-center gap-2">
+										<Package className="h-4 w-4 text-gray-500" />
+										<span className="text-sm text-gray-500 dark:text-gray-400">
+											{item.quantity} available
+										</span>
+									</div>
+
+									<div className="flex gap-2">
+										{/* <EditDishDetails
+											item={item}
+											toogleFetch={toogleFetch}
+										/> */}
+										<Button
+											// onClick={() =>
+											// 	// handleDelete(item?._id)
+											// }
+											size="sm"
+											variant="outline"
+											className="text-red-600 hover:text-red-700"
+										>
+											<Trash2 className="h-4 w-4" />
+										</Button>
+									</div>
 								</div>
-							</CardContent>
-						</Card>
+							</div>
+						</div>
 					))}
 				</div>
 

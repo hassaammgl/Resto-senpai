@@ -20,15 +20,16 @@ export const useCart = create<CartState>()(
 	persist(
 		(set) => ({
 			cartItems: [],
+			dishes: [],
 			isLoading: false,
 			error: null,
-			getAllDishes: async () => {
+			getDishes: async () => {
 				try {
 					set({ isLoading: true, error: null });
 					const { data } = await axiosInstance.get(
 						"/api/menu/get-all-dishes"
 					);
-					set({ cartItems: [...data.data] });
+					set({ dishes: [...data.data] });
 				} catch (err: any) {
 					const errorMessage = getErrorMessage(err);
 					set({ error: errorMessage });
@@ -40,7 +41,7 @@ export const useCart = create<CartState>()(
 			clearError: () => set({ error: null }),
 		}),
 		{
-			name: "menu-storage",
+			name: "cart-storage",
 			partialize: (state) => ({
 				cart: state.cartItems,
 			}),

@@ -81,8 +81,9 @@ interface CartData extends DishData {
 
 export interface CartState {
 	cartItems: CartData[];
+	dishes: CartData[];
 	isLoading: boolean;
 	error: string | null;
-	getAllDishes: () => Promise<void>;
+	getDishes: () => Promise<void>;
 	clearError: () => void;
 }
