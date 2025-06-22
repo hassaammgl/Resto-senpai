@@ -72,7 +72,7 @@ export interface MenuState {
 	clearError: () => void;
 }
 
-interface CartData extends DishData {
+export interface CartData extends DishData {
 	rating: number;
 	calories: number;
 	isVegetarian: boolean;
@@ -84,6 +84,8 @@ export interface CartState {
 	dishes: CartData[];
 	isLoading: boolean;
 	error: string | null;
+	pricings: number;
 	getDishes: () => Promise<void>;
+	addToCart: (cart: CartData) => void;
 	clearError: () => void;
 }

@@ -12,16 +12,18 @@ import {
 } from "@/components/ui/select";
 import {
 	ShoppingCart, Search, Filter,
-	Trash2,
 	Clock,
 	Package,
+	Plus
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useCart } from "@/store/cart";
+import type { CartData } from "@/types"
+import StarRating from "@/components/shared/StarRating";
 
 const CustomerMenuPage = () => {
 
-	const { dishes, getDishes } = useCart()
+	const { dishes, getDishes, cartItems } = useCart()
 
 	const [searchTerm, setSearchTerm] = useState("");
 	const [selectedCategory, setSelectedCategory] = useState("all");
@@ -56,11 +58,12 @@ const CustomerMenuPage = () => {
 			}
 		});
 
-	const addToCart = (item: (typeof dishes)[0]) => {
+	const addToCart = (item: CartData) => {
 		console.log(item);
 	};
-	const cartItemCount = 0;
-	const cartTotal = 0;
+	const cartItemCount = cartItems.length;
+	let cartTotal = 0;
+	const cartsTotal = cartItems.map((cart) => cart.price + cartTotal);
 
 	return (
 		<CustomerLayout>
@@ -206,7 +209,7 @@ const CustomerMenuPage = () => {
 									<h3 className="text-lg font-bold dark:text-white text-gray-900 line-clamp-1">
 										{item.name}
 									</h3>
-									<span className="text-lg font-bold text-amber-600 whitespace-nowrap">
+									<span className="text-lg font-bold text-green-600 whitespace-nowrap">
 										Rs. {item.price}
 									</span>
 								</div>
@@ -215,6 +218,14 @@ const CustomerMenuPage = () => {
 									{item.description}
 								</p>
 
+								<div className="mb-4  h-8">
+									<StarRating
+										rating={item.rating}
+										maxStars={5}
+										showText={true}
+
+									/>
+								</div>
 								<div className="flex flex-wrap gap-2 mb-4">
 									<Badge
 										variant={
@@ -250,19 +261,15 @@ const CustomerMenuPage = () => {
 									</div>
 
 									<div className="flex gap-2">
-										{/* <EditDishDetails
-											item={item}
-											toogleFetch={toogleFetch}
-										/> */}
 										<Button
-											// onClick={() =>
-											// 	// handleDelete(item?._id)
-											// }
+											onClick={() =>
+												addToCart(item)
+											}
 											size="sm"
-											variant="outline"
-											className="text-red-600 hover:text-red-700"
+											className="text-white bg-green-500"
 										>
-											<Trash2 className="h-4 w-4" />
+											<Plus />
+											Add to Cart
 										</Button>
 									</div>
 								</div>

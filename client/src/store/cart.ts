@@ -22,6 +22,7 @@ export const useCart = create<CartState>()(
 			cartItems: [],
 			dishes: [],
 			isLoading: false,
+			pricings: 0,
 			error: null,
 			getDishes: async () => {
 				try {
@@ -38,6 +39,7 @@ export const useCart = create<CartState>()(
 					set({ isLoading: false });
 				}
 			},
+			addToCart: (item) => {},
 			clearError: () => set({ error: null }),
 		}),
 		{
