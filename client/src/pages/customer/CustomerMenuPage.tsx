@@ -60,11 +60,19 @@ const CustomerMenuPage = () => {
 
 	const addToCart = (item: CartData) => {
 		console.log(item);
-		addToCartFunc(item)
+		addToCartFunc({
+			_id: item._id,
+			image: item.image,
+			name: item.name,
+			prepTime: item.prepTime,
+			priceOfEach: item.price,
+			totalPrice: item.price,
+			quantity: 1,
+		})
 	};
 	const cartItemCount = cartItems.length;
 	let price = 0
-	const cartTotal = cartItems.map((cart) => price += cart.price);
+	const cartTotal = cartItems.map((cart) => price += cart.totalPrice);
 	console.log(cartTotal);
 
 	return (

@@ -46,6 +46,30 @@ export type AuthState = {
 	clearError: () => void;
 };
 
+
+export interface MenuState {
+	menuItems: DishData[];
+	isLoading: boolean;
+	error: string | null;
+	addDishToMenu: (data: DishData) => Promise<void>;
+	updateDishDetails: (data: DishData) => Promise<void>;
+	deleteDish: (_id: string | undefined) => Promise<void>;
+	getAllDishes: () => Promise<void>;
+	clearError: () => void;
+}
+
+/////////////////////////
+
+export interface CartStore {
+	_id?: string;
+	name: string;
+	priceOfEach: number;
+	totalPrice: number;
+	image: string;
+	quantity: number;
+	prepTime: string;
+}
+
 export interface DishData {
 	_id?: string;
 	name: string;
@@ -61,39 +85,18 @@ export interface DishData {
 	prepTime: string;
 }
 
-export interface MenuState {
-	menuItems: DishData[];
-	isLoading: boolean;
-	error: string | null;
-	addDishToMenu: (data: DishData) => Promise<void>;
-	updateDishDetails: (data: DishData) => Promise<void>;
-	deleteDish: (_id: string | undefined) => Promise<void>;
-	getAllDishes: () => Promise<void>;
-	clearError: () => void;
-}
-
-export interface CartData {
-	_id?: string;
-	name: string;
-	description: string;
-	price: number;
-	category: string;
-	image: string;
-	available?: boolean;
-	quantity?: number;
-	calories: number;
-	isVegetarian: boolean;
-	isPopular: boolean;
-	prepTime: string;
-}
-
 export interface CartState {
-	cartItems: CartData[];
-	dishes: CartData[];
+	cartItems: CartStore[];
+	dishes: DishData[];
 	isLoading: boolean;
 	error: string | null;
 	pricings: number;
 	getDishes: () => Promise<void>;
-	addToCart: (cart: CartData) => void;
+	addToCart: (item: CartStore) => void;
+	removeFromCart: (id: string) => void;
+	updateQuantity: (id: string, newQuantity: number) => void;
+	clearCart: () => void;
+	calculateTotal: (items?: CartStore[]) => number;
+	hasItemInCart: (id: string) => boolean;
 	clearError: () => void;
 }

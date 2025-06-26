@@ -34,13 +34,12 @@ import {
 import { useAuth } from "@/store/auth";
 import { useState } from "react";
 import { useCart } from "@/store/cart";
+import { NavLink } from "react-router";
 
-
-// Dummy implementations for cart summary functions
 
 
 const CustomerCartPage = () => {
-	
+
 	const { user } = useAuth();
 	const { cartItems } = useCart();
 	const [orderType, setOrderType] = useState<
@@ -50,22 +49,23 @@ const CustomerCartPage = () => {
 	const [paymentMethod, setPaymentMethod] = useState("card");
 
 	function getTotal() {
-		return cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+		// return cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+		return 20;
 	}
 
-	function getTax() {
-		// Example: 8% tax
-		return getTotal() * 0.08;
-	}
+	// function getTax() {
+	// 	// Example: 8% tax
+	// 	return getTotal() * 0.08;
+	// }
 
-	function getDeliveryFee() {
-		// Example: free delivery for orders over $30
-		return getTotal() > 30 ? 0 : 5;
-	}
+	// function getDeliveryFee() {
+	// 	// Example: free delivery for orders over $30
+	// 	return getTotal() > 30 ? 0 : 5;
+	// }
 
-	function getGrandTotal() {
-		return getTotal() + getTax() + getDeliveryFee();
-	}
+	// function getGrandTotal() {
+	// 	return getTotal() + getTax() + getDeliveryFee();
+	// }
 
 	const handleOrderTypeChange = (
 		type: "dine-in" | "takeaway" | "delivery"
@@ -92,15 +92,17 @@ const CustomerCartPage = () => {
 			<CustomerLayout>
 				<div className="text-center py-16">
 					<div className="text-6xl mb-4">🛒</div>
-					<h2 className="text-2xl font-bold text-gray-900 mb-2">
+					<h2 className="text-2xl font-bold text-gray-900 mb-2 dark:text-white">
 						Your cart is empty
 					</h2>
-					<p className="text-gray-600 mb-6">
+					<p className="text-gray-600 mb-6 dark:text-white/70">
 						Add some delicious items to get started!
 					</p>
-					<Button className="bg-green-600 hover:bg-green-700">
-						Browse Menu
-					</Button>
+					<NavLink className="bg-green-600 hover:bg-green-700" to={"/customer/menu"} >
+						<Button className="bg-green-600 hover:bg-green-700">
+							Browse Menu
+						</Button>
+					</NavLink>
 				</div>
 			</CustomerLayout>
 		);
@@ -264,12 +266,15 @@ const CustomerCartPage = () => {
 										key={item._id}
 										className="flex items-center justify-between py-4 border-b last:border-b-0"
 									>
+										<div className="mr-3">
+											<img src={item.image} className="size-20" alt="" />
+										</div>
 										<div className="flex-1">
 											<h4 className="font-medium">
 												{item.name}
 											</h4>
 											<p className="text-sm text-gray-600">
-												${item.price.toFixed(2)} each
+												${item.priceOfEach.toFixed(2)} each
 											</p>
 										</div>
 										<div className="flex items-center gap-3">
@@ -295,10 +300,12 @@ const CustomerCartPage = () => {
 											<div className="text-right min-w-[80px]">
 												<p className="font-medium">
 													$
-													{(
-														item.price 
-														// item?.quantity
-													).toFixed(2)}
+													{/* {(
+														item.totalPrice
+													).toFixed(2)} */}
+													{
+														item.totalPrice
+													}
 												</p>
 											</div>
 											<Button
@@ -351,20 +358,19 @@ const CustomerCartPage = () => {
 								</div>
 								<div className="flex justify-between">
 									<span>Tax</span>
-									<span>${getTax().toFixed(2)}</span>
+									{/* <span>${getTax().toFixed(2)}</span> */}
+									<span>Rs. {2}</span>
 								</div>
 								{orderType === "delivery" && (
 									<div className="flex justify-between">
 										<span>Delivery Fee</span>
 										<span>
-											{getDeliveryFee() === 0 ? (
+											{getTotal() > 30 ? (
 												<span className="text-green-600">
 													FREE
 												</span>
 											) : (
-												`$${getDeliveryFee().toFixed(
-													2
-												)}`
+												"$5.00"
 											)}
 										</span>
 									</div>
@@ -372,19 +378,16 @@ const CustomerCartPage = () => {
 								<Separator />
 								<div className="flex justify-between font-bold text-lg">
 									<span>Total</span>
-									<span>${getGrandTotal().toFixed(2)}</span>
+									<span>Rs. 50.00</span>
 								</div>
 
 								{user?.loyaltyPoints && (
 									<div className="bg-green-50 p-3 rounded-lg">
 										<p className="text-sm text-green-800">
-											💎 You have {user?.loyaltyPoints}{" "}
-											loyalty points
+											💎 You have {user?.loyaltyPoints} loyalty points
 										</p>
 										<p className="text-xs text-green-600">
-											You'll earn{" "}
-											{Math.floor(getGrandTotal())} points
-											from this order
+											You'll earn 10 points from this order
 										</p>
 									</div>
 								)}
@@ -457,7 +460,8 @@ const CustomerCartPage = () => {
 							onClick={handlePlaceOrder}
 							className="w-full bg-green-600 hover:bg-green-700 h-12 text-lg"
 						>
-							Place Order - ${getGrandTotal().toFixed(2)}
+							{/* Place Order - ${getGrandTotal().toFixed(2)} */}
+							Place Order - Rs. 50.00
 						</Button>
 					</div>
 				</div>
