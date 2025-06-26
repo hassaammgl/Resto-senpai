@@ -332,6 +332,9 @@ const DeliveryAddress = ({ street, city, state, zipCode, phone }: AddressType) =
 }
 
 const OrderDetails = ({ cartItems, specialInstructions, setSpecialInstructions }: OrderDetailsTypes) => {
+	const { removeFromCart, updateQuantity } = useCart();
+
+
 	return (
 		<>
 			{/* Cart Items */}
@@ -364,6 +367,7 @@ const OrderDetails = ({ cartItems, specialInstructions, setSpecialInstructions }
 										size="sm"
 										variant="ghost"
 										className="h-8 w-8 p-0"
+										onClick={() => updateQuantity(item?._id, item.quantity - 1)}
 									>
 										<Minus className="h-4 w-4" />
 									</Button>
@@ -374,6 +378,7 @@ const OrderDetails = ({ cartItems, specialInstructions, setSpecialInstructions }
 										size="sm"
 										variant="ghost"
 										className="h-8 w-8 p-0"
+										onClick={() => updateQuantity(item?._id, item.quantity + 1)}
 									>
 										<Plus className="h-4 w-4" />
 									</Button>
@@ -390,6 +395,7 @@ const OrderDetails = ({ cartItems, specialInstructions, setSpecialInstructions }
 									size="sm"
 									variant="ghost"
 									className="text-red-600 hover:text-red-700 h-8 w-8 p-0"
+									onClick={() => removeFromCart(item?._id)}
 								>
 									<Trash2 className="h-4 w-4" />
 								</Button>
@@ -443,7 +449,7 @@ const OrderSummary = ({ total, tax, orderType, deliveryFee, grandTotal, loyality
 				<div className="flex justify-between">
 					<span>Delivery Fee</span>
 					<span>
-						{total > 30 ? (
+						{total > 555 ? (
 							<span className="text-green-500">
 								FREE
 							</span>

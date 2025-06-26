@@ -91,8 +91,8 @@ export interface CartState {
 	pricings: number;
 	getDishes: () => Promise<void>;
 	addToCart: (item: CartStore) => void;
-	removeFromCart: (id: string) => void;
-	updateQuantity: (id: string, newQuantity: number) => void;
+	removeFromCart: (id: string | undefined) => void;
+	updateQuantity: (id: string | undefined, newQuantity: number) => void;
 	clearCart: () => void;
 	calculateTotal: (items?: CartStore[]) => number;
 	hasItemInCart: (id: string) => boolean;
