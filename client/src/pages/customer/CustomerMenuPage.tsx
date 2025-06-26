@@ -23,7 +23,7 @@ import StarRating from "@/components/shared/StarRating";
 
 const CustomerMenuPage = () => {
 
-	const { dishes, getDishes, cartItems } = useCart()
+	const { dishes, getDishes, cartItems, addToCart: addToCartFunc } = useCart()
 
 	const [searchTerm, setSearchTerm] = useState("");
 	const [selectedCategory, setSelectedCategory] = useState("all");
@@ -60,10 +60,12 @@ const CustomerMenuPage = () => {
 
 	const addToCart = (item: CartData) => {
 		console.log(item);
+		addToCartFunc(item)
 	};
 	const cartItemCount = cartItems.length;
-	let cartTotal = 0;
-	const cartsTotal = cartItems.map((cart) => cart.price + cartTotal);
+	let price = 0
+	const cartTotal = cartItems.map((cart) => price += cart.price);
+	console.log(cartTotal);
 
 	return (
 		<CustomerLayout>
@@ -81,7 +83,7 @@ const CustomerMenuPage = () => {
 					<div className="flex items-center gap-4">
 						<div className="bg-green-50 px-4 py-2 rounded-lg dark:text-white/60 dark:bg-black">
 							<p className="text-sm text-green-800">
-								🚚 Free delivery over $30
+								🚚 Free delivery over Rs. 30
 							</p>
 						</div>
 						<Button className="bg-green-600 hover:bg-green-700 relative">
@@ -89,7 +91,7 @@ const CustomerMenuPage = () => {
 							Cart ({cartItemCount})
 							{cartItemCount > 0 && (
 								<Badge className="ml-2 bg-white text-green-600">
-									${cartTotal.toFixed(2)}
+									Rs. {price.toFixed(2)}
 								</Badge>
 							)}
 						</Button>

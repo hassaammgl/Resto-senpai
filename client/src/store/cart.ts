@@ -1,3 +1,5 @@
+// workin on Add to cart func
+
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import axios from "axios";
@@ -18,7 +20,7 @@ const getErrorMessage = (err: any): string => {
 
 export const useCart = create<CartState>()(
 	persist(
-		(set) => ({
+		(set, get) => ({
 			cartItems: [],
 			dishes: [],
 			isLoading: false,
@@ -39,13 +41,36 @@ export const useCart = create<CartState>()(
 					set({ isLoading: false });
 				}
 			},
-			addToCart: (item) => {},
+			addToCart: (item) => {
+				const cartItems = get().cartItems;
+				const existingIndex = cartItems.findIndex(
+					(cartItem) => cartItem._id === item._id
+				);
+
+				let updatedCart;
+				if (existingIndex !== -1) {
+					// If item exists, increase quantity
+					updatedCart = cartItems.map((cartItem, idx) =>
+						idx === existingIndex
+							? {
+									...cartItem,
+									itemQuantity:
+										(cartItem.itemQuantity || 1) + 1,
+							  }
+							: cartItem
+					);
+				} else {
+					// If item doesn't exist, add with quantity 1
+					updatedCart = [...cartItems, { ...item, quantity: 1 }];
+				}
+				set({ cartItems: updatedCart,});
+			},
 			clearError: () => set({ error: null }),
 		}),
 		{
 			name: "cart-storage",
 			partialize: (state) => ({
-				cart: state.cartItems,
+				cartItems: state.cartItems,
 			}),
 		}
 	)

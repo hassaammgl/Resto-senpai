@@ -6,11 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/useToast";
 import { AxiosError } from "axios";
 import { ModeToggle } from "@/components/mode-toggle";
+import { useCart } from "@/store/cart";
 
 const CustomerSidebar = () => {
 	const location = useLocation();
 	const { logout } = useAuth();
 	const { success, error } = useToast();
+const {cartItems}=	useCart()
 
 	const navigate = useNavigate();
 
@@ -20,7 +22,7 @@ const CustomerSidebar = () => {
 			icon: ShoppingCart,
 			label: "Cart",
 			path: "/customer/cart",
-			badge: 1,
+			badge: cartItems.length,
 		},
 		{ icon: ClipboardList, label: "My Orders", path: "/customer/orders" },
 		{ icon: User, label: "Profile", path: "/customer/profile" },

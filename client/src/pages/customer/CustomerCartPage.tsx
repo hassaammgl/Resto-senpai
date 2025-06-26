@@ -33,55 +33,39 @@ import {
 // import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/store/auth";
 import { useState } from "react";
+import { useCart } from "@/store/cart";
 
-const items = [
-	{
-		id: 1,
-		name: "Margherita Pizza",
-		price: 12.99,
-		quantity: 2,
-	},
-	{
-		id: 2,
-		name: "Caesar Salad",
-		price: 8.5,
-		quantity: 1,
-	},
-	{
-		id: 3,
-		name: "Spaghetti Bolognese",
-		price: 14.25,
-		quantity: 1,
-	},
-];
 
 // Dummy implementations for cart summary functions
-function getTotal() {
-	return items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-}
 
-function getTax() {
-	// Example: 8% tax
-	return getTotal() * 0.08;
-}
-
-function getDeliveryFee() {
-	// Example: free delivery for orders over $30
-	return getTotal() > 30 ? 0 : 5;
-}
-
-function getGrandTotal() {
-	return getTotal() + getTax() + getDeliveryFee();
-}
 
 const CustomerCartPage = () => {
-	// const { items, deliveryInfo, updateQuantity, removeItem, setDeliveryInfo, getTotal, getTax, getDeliveryFee, getGrandTotal, clearCart } = useCart();
+	
 	const { user } = useAuth();
+	const { cartItems } = useCart();
 	const [orderType, setOrderType] = useState<
 		"dine-in" | "takeaway" | "delivery"
 	>("delivery");
 	const [specialInstructions, setSpecialInstructions] = useState("");
 	const [paymentMethod, setPaymentMethod] = useState("card");
+
+	function getTotal() {
+		return cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+	}
+
+	function getTax() {
+		// Example: 8% tax
+		return getTotal() * 0.08;
+	}
+
+	function getDeliveryFee() {
+		// Example: free delivery for orders over $30
+		return getTotal() > 30 ? 0 : 5;
+	}
+
+	function getGrandTotal() {
+		return getTotal() + getTax() + getDeliveryFee();
+	}
 
 	const handleOrderTypeChange = (
 		type: "dine-in" | "takeaway" | "delivery"
@@ -103,7 +87,7 @@ const CustomerCartPage = () => {
 		// clearCart();
 	};
 
-	if (items?.length === 0) {
+	if (cartItems?.length === 0) {
 		return (
 			<CustomerLayout>
 				<div className="text-center py-16">
@@ -271,13 +255,13 @@ const CustomerCartPage = () => {
 						<Card>
 							<CardHeader>
 								<CardTitle>
-									Order Items ({items?.length})
+									Order Items ({cartItems?.length})
 								</CardTitle>
 							</CardHeader>
 							<CardContent className="space-y-4">
-								{items?.map((item) => (
+								{cartItems?.map((item) => (
 									<div
-										key={item.id}
+										key={item._id}
 										className="flex items-center justify-between py-4 border-b last:border-b-0"
 									>
 										<div className="flex-1">
@@ -312,8 +296,8 @@ const CustomerCartPage = () => {
 												<p className="font-medium">
 													$
 													{(
-														item.price *
-														item.quantity
+														item.price 
+														// item?.quantity
 													).toFixed(2)}
 												</p>
 											</div>

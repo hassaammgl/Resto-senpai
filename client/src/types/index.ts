@@ -72,11 +72,19 @@ export interface MenuState {
 	clearError: () => void;
 }
 
-export interface CartData extends DishData {
-	rating: number;
+export interface CartData {
+	_id?: string;
+	name: string;
+	description: string;
+	price: number;
+	category: string;
+	image: string;
+	available?: boolean;
+	quantity?: number;
 	calories: number;
 	isVegetarian: boolean;
 	isPopular: boolean;
+	prepTime: string;
 }
 
 export interface CartState {
