@@ -429,54 +429,55 @@ const OrderDetails = ({ cartItems, specialInstructions, setSpecialInstructions }
 }
 
 const OrderSummary = ({ total, tax, orderType, deliveryFee, grandTotal, loyalityPoints }: OrderSummaryType) => {
-	return (<Card>
-		<CardHeader>
-			<CardTitle className="flex items-center gap-2">
-				<CreditCard className="h-5 w-5" />
-				Order Summary
-			</CardTitle>
-		</CardHeader>
-		<CardContent className="space-y-4">
-			<div className="flex justify-between">
-				<span>Subtotal</span>
-				<span>Rs. {total.toFixed(2)}</span>
-			</div>
-			<div className="flex justify-between">
-				<span>Tax</span>
-				<span>Rs. {tax.toFixed(2)}</span>
-			</div>
-			{orderType === "delivery" && (
+	return (
+		<Card>
+			<CardHeader>
+				<CardTitle className="flex items-center gap-2">
+					<CreditCard className="h-5 w-5" />
+					Order Summary
+				</CardTitle>
+			</CardHeader>
+			<CardContent className="space-y-4">
 				<div className="flex justify-between">
-					<span>Delivery Fee</span>
-					<span>
-						{total > 555 ? (
-							<span className="text-green-500">
-								FREE
-							</span>
-						) : (
-							`Rs. ${deliveryFee}`
-						)}
-					</span>
+					<span>Subtotal</span>
+					<span>Rs. {total.toFixed(2)}</span>
 				</div>
-			)}
-			<Separator />
-			<div className="flex justify-between font-bold text-lg">
-				<span>Total</span>
-				<span>Rs. {grandTotal}</span>
-			</div>
+				<div className="flex justify-between">
+					<span>Tax</span>
+					<span>Rs. {tax.toFixed(2)}</span>
+				</div>
+				{orderType === "delivery" && (
+					<div className="flex justify-between">
+						<span>Delivery Fee</span>
+						<span>
+							{total > 555 ? (
+								<span className="text-green-500">
+									FREE
+								</span>
+							) : (
+								`Rs. ${deliveryFee}`
+							)}
+						</span>
+					</div>
+				)}
+				<Separator />
+				<div className="flex justify-between font-bold text-lg">
+					<span>Total</span>
+					<span>Rs. {grandTotal}</span>
+				</div>
 
-			{loyalityPoints && (
-				<div className="bg-green-50 p-3 rounded-lg">
-					<p className="text-sm text-green-800">
-						💎 You have {loyalityPoints} loyalty points
-					</p>
-					<p className="text-xs text-green-600">
-						You'll earn 10 points from this order
-					</p>
-				</div>
-			)}
-		</CardContent>
-	</Card>
+				{loyalityPoints && (
+					<div className="bg-green-50 p-3 rounded-lg">
+						<p className="text-sm text-green-800">
+							💎 You have {loyalityPoints} loyalty points
+						</p>
+						<p className="text-xs text-green-600">
+							You'll earn 10 points from this order
+						</p>
+					</div>
+				)}
+			</CardContent>
+		</Card>
 	)
 }
 
