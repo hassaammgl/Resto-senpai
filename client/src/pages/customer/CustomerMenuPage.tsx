@@ -18,7 +18,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useCart } from "@/store/cart";
-import type { CartData } from "@/types"
+import type { DishData } from "@/types"
 import StarRating from "@/components/shared/StarRating";
 
 const CustomerMenuPage = () => {
@@ -58,7 +58,7 @@ const CustomerMenuPage = () => {
 			}
 		});
 
-	const addToCart = (item: CartData) => {
+	const addToCart = (item: DishData) => {
 		console.log(item);
 		addToCartFunc({
 			_id: item._id,
@@ -72,8 +72,7 @@ const CustomerMenuPage = () => {
 	};
 	const cartItemCount = cartItems.length;
 	let price = 0
-	const cartTotal = cartItems.map((cart) => price += cart.totalPrice);
-	console.log(cartTotal);
+	cartItems.map((cart) => price += cart.totalPrice);
 
 	return (
 		<CustomerLayout>

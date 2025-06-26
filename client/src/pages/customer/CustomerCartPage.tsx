@@ -17,7 +17,6 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-// import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
 	Minus,
@@ -30,13 +29,11 @@ import {
 	Store,
 	Utensils,
 } from "lucide-react";
-// import { useCart } from "@/contexts/CartContext";
 import { useAuth } from "@/store/auth";
 import { useState } from "react";
 import { useCart } from "@/store/cart";
 import { NavLink } from "react-router";
-
-
+import type { CartStore } from "@/types"
 
 const CustomerCartPage = () => {
 
@@ -49,23 +46,24 @@ const CustomerCartPage = () => {
 	const [paymentMethod, setPaymentMethod] = useState("card");
 
 	function getTotal() {
-		// return cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-		return 20;
+		let cartItemsPrice = 0;
+		cartItems.map((i) => {
+			cartItemsPrice = cartItemsPrice + i.totalPrice
+		})
+		return cartItemsPrice;
 	}
 
-	// function getTax() {
-	// 	// Example: 8% tax
-	// 	return getTotal() * 0.08;
-	// }
+	function getTax() {
+		return getTotal() * 0.08;
+	}
 
-	// function getDeliveryFee() {
-	// 	// Example: free delivery for orders over $30
-	// 	return getTotal() > 30 ? 0 : 5;
-	// }
+	function getDeliveryFee() {
+		return getTotal() > 30 ? 0 : 5;
+	}
 
-	// function getGrandTotal() {
-	// 	return getTotal() + getTax() + getDeliveryFee();
-	// }
+	function getGrandTotal() {
+		return getTotal() + getTax() + getDeliveryFee();
+	}
 
 	const handleOrderTypeChange = (
 		type: "dine-in" | "takeaway" | "delivery"
@@ -189,271 +187,39 @@ const CustomerCartPage = () => {
 						</Card>
 
 						{/* Delivery Address (if delivery) */}
-						{orderType === "delivery" && (
-							<Card>
-								<CardHeader>
-									<CardTitle className="flex items-center gap-2">
-										<MapPin className="h-5 w-5" />
-										Delivery Address
-									</CardTitle>
-								</CardHeader>
-								<CardContent className="space-y-4">
-									<div className="grid grid-cols-2 gap-4">
-										<div>
-											<Label htmlFor="street">
-												Street Address
-											</Label>
-											<Input
-												id="street"
-												defaultValue={
-													user?.address?.street
-												}
-											/>
-										</div>
-										<div>
-											<Label htmlFor="city">City</Label>
-											<Input
-												id="city"
-												defaultValue={
-													user?.address?.city
-												}
-											/>
-										</div>
-										<div>
-											<Label htmlFor="state">State</Label>
-											<Input
-												id="state"
-												defaultValue={
-													user?.address?.state
-												}
-											/>
-										</div>
-										<div>
-											<Label htmlFor="zip">
-												ZIP Code
-											</Label>
-											<Input
-												id="zip"
-												defaultValue={
-													user?.address?.zipCode
-												}
-											/>
-										</div>
-									</div>
-									<div>
-										<Label htmlFor="phone">
-											Contact Phone
-										</Label>
-										<Input
-											id="phone"
-											defaultValue={user?.phone}
-										/>
-									</div>
-								</CardContent>
-							</Card>
-						)}
+						{orderType === "delivery" && <DeliveryAddress
+							phone={user?.phone}
+							city={user?.address?.city}
+							state={user?.address?.state}
+							street={user?.address?.street}
+							zipCode={user?.address?.zipCode}
+						/>}
 
-						{/* Cart Items */}
-						<Card>
-							<CardHeader>
-								<CardTitle>
-									Order Items ({cartItems?.length})
-								</CardTitle>
-							</CardHeader>
-							<CardContent className="space-y-4">
-								{cartItems?.map((item) => (
-									<div
-										key={item._id}
-										className="flex items-center justify-between py-4 border-b last:border-b-0"
-									>
-										<div className="mr-3">
-											<img src={item.image} className="size-20" alt="" />
-										</div>
-										<div className="flex-1">
-											<h4 className="font-medium">
-												{item.name}
-											</h4>
-											<p className="text-sm text-gray-600">
-												${item.priceOfEach.toFixed(2)} each
-											</p>
-										</div>
-										<div className="flex items-center gap-3">
-											<div className="flex items-center gap-2 dark:bg-black bg-gray-100 rounded-lg p-1">
-												<Button
-													size="sm"
-													variant="ghost"
-													className="h-8 w-8 p-0"
-												>
-													<Minus className="h-4 w-4" />
-												</Button>
-												<span className="w-8 text-center">
-													{item.quantity}
-												</span>
-												<Button
-													size="sm"
-													variant="ghost"
-													className="h-8 w-8 p-0"
-												>
-													<Plus className="h-4 w-4" />
-												</Button>
-											</div>
-											<div className="text-right min-w-[80px]">
-												<p className="font-medium">
-													$
-													{/* {(
-														item.totalPrice
-													).toFixed(2)} */}
-													{
-														item.totalPrice
-													}
-												</p>
-											</div>
-											<Button
-												size="sm"
-												variant="ghost"
-												className="text-red-600 hover:text-red-700 h-8 w-8 p-0"
-											>
-												<Trash2 className="h-4 w-4" />
-											</Button>
-										</div>
-									</div>
-								))}
-							</CardContent>
-						</Card>
+						<OrderDetails
+							setSpecialInstructions={setSpecialInstructions}
+							specialInstructions={specialInstructions}
+							cartItems={cartItems}
+						/>
 
-						{/* Special Instructions */}
-						<Card>
-							<CardHeader>
-								<CardTitle>Special Instructions</CardTitle>
-								<CardDescription>
-									Any special requests or notes for your
-									order?
-								</CardDescription>
-							</CardHeader>
-							<CardContent>
-								<Textarea
-									placeholder="e.g., No onions, extra sauce, etc."
-									value={specialInstructions}
-									onChange={(e) =>
-										setSpecialInstructions(e.target.value)
-									}
-								/>
-							</CardContent>
-						</Card>
 					</div>
 
-					{/* Order Summary */}
 					<div className="space-y-6">
-						<Card>
-							<CardHeader>
-								<CardTitle className="flex items-center gap-2">
-									<CreditCard className="h-5 w-5" />
-									Order Summary
-								</CardTitle>
-							</CardHeader>
-							<CardContent className="space-y-4">
-								<div className="flex justify-between">
-									<span>Subtotal</span>
-									<span>${getTotal().toFixed(2)}</span>
-								</div>
-								<div className="flex justify-between">
-									<span>Tax</span>
-									{/* <span>${getTax().toFixed(2)}</span> */}
-									<span>Rs. {2}</span>
-								</div>
-								{orderType === "delivery" && (
-									<div className="flex justify-between">
-										<span>Delivery Fee</span>
-										<span>
-											{getTotal() > 30 ? (
-												<span className="text-green-600">
-													FREE
-												</span>
-											) : (
-												"$5.00"
-											)}
-										</span>
-									</div>
-								)}
-								<Separator />
-								<div className="flex justify-between font-bold text-lg">
-									<span>Total</span>
-									<span>Rs. 50.00</span>
-								</div>
 
-								{user?.loyaltyPoints && (
-									<div className="bg-green-50 p-3 rounded-lg">
-										<p className="text-sm text-green-800">
-											💎 You have {user?.loyaltyPoints} loyalty points
-										</p>
-										<p className="text-xs text-green-600">
-											You'll earn 10 points from this order
-										</p>
-									</div>
-								)}
-							</CardContent>
-						</Card>
-
+						<OrderSummary
+							total={getTotal()}
+							tax={getTax()}
+							deliveryFee={getDeliveryFee()}
+							orderType={orderType}
+							grandTotal={getGrandTotal()}
+							loyalityPoints={user?.loyaltyPoints}
+						/>
 						{/* Payment Method */}
-						<Card>
-							<CardHeader>
-								<CardTitle>Payment Method</CardTitle>
-							</CardHeader>
-							<CardContent className="space-y-4">
-								<Select
-									value={paymentMethod}
-									onValueChange={setPaymentMethod}
-								>
-									<SelectTrigger>
-										<SelectValue />
-									</SelectTrigger>
-									<SelectContent>
-										<SelectItem value="card">
-											Credit/Debit Card
-										</SelectItem>
-										<SelectItem value="paypal">
-											PayPal
-										</SelectItem>
-										<SelectItem value="cash">
-											Cash on Delivery
-										</SelectItem>
-									</SelectContent>
-								</Select>
-
-								{paymentMethod === "card" && (
-									<div className="space-y-3">
-										<Input placeholder="Card Number" />
-										<div className="grid grid-cols-2 gap-3">
-											<Input placeholder="MM/YY" />
-											<Input placeholder="CVV" />
-										</div>
-										<Input placeholder="Cardholder Name" />
-									</div>
-								)}
-							</CardContent>
-						</Card>
+						<PaymentMethod
+							paymentMethod={paymentMethod}
+							setPaymentMethod={setPaymentMethod} />
 
 						{/* Estimated Time */}
-						<Card>
-							<CardContent className="pt-6">
-								<div className="flex items-center gap-3 text-center">
-									<Clock className="h-5 w-5 text-green-600" />
-									<div>
-										<p className="font-medium">
-											Estimated Time
-										</p>
-										<p className="text-sm text-gray-600">
-											{orderType === "delivery" &&
-												"30-45 minutes"}
-											{orderType === "takeaway" &&
-												"15-20 minutes"}
-											{orderType === "dine-in" &&
-												"Immediate seating"}
-										</p>
-									</div>
-								</div>
-							</CardContent>
-						</Card>
+						<EstimatedTime orderType={orderType} />
 
 						{/* Place Order Button */}
 						<Button
@@ -469,5 +235,312 @@ const CustomerCartPage = () => {
 		</CustomerLayout>
 	);
 };
+
+interface OrderSummaryType {
+	total: number;
+	tax: number;
+	orderType: string;
+	deliveryFee: number;
+	grandTotal: number;
+	loyalityPoints?: string;
+}
+interface PaymentMethodType {
+	paymentMethod: string;
+	setPaymentMethod: (pay: string) => void;
+}
+
+interface AddressType {
+	street: string | undefined;
+	city: string | undefined;
+	state: string | undefined;
+	zipCode: string | undefined;
+	phone: string | undefined;
+}
+
+interface OrderDetailsTypes {
+	cartItems: CartStore[],
+	specialInstructions: string;
+	setSpecialInstructions: (data: string) => void;
+}
+
+
+
+const DeliveryAddress = ({ street, city, state, zipCode, phone }: AddressType) => {
+	return (
+		<Card>
+			<CardHeader>
+				<CardTitle className="flex items-center gap-2">
+					<MapPin className="h-5 w-5" />
+					Delivery Address
+				</CardTitle>
+			</CardHeader>
+			<CardContent className="space-y-4">
+				<div className="grid grid-cols-2 gap-4">
+					<div>
+						<Label htmlFor="street">
+							Street Address
+						</Label>
+						<Input
+							id="street"
+							value={
+								street
+							}
+						/>
+					</div>
+					<div>
+						<Label htmlFor="city">City</Label>
+						<Input
+							id="city"
+							value={
+								city
+							}
+						/>
+					</div>
+					<div>
+						<Label htmlFor="state">State</Label>
+						<Input
+							id="state"
+							value={
+								state
+							}
+						/>
+					</div>
+					<div>
+						<Label htmlFor="zip">
+							ZIP Code
+						</Label>
+						<Input
+							id="zip"
+							value={
+								zipCode
+							}
+						/>
+					</div>
+				</div>
+				<div>
+					<Label htmlFor="phone">
+						Contact Phone
+					</Label>
+					<Input
+						id="phone"
+						value={phone}
+					/>
+				</div>
+			</CardContent>
+		</Card>
+	)
+}
+
+const OrderDetails = ({ cartItems, specialInstructions, setSpecialInstructions }: OrderDetailsTypes) => {
+	return (
+		<>
+			{/* Cart Items */}
+			<Card>
+				<CardHeader>
+					<CardTitle>
+						Order Items ({cartItems?.length})
+					</CardTitle>
+				</CardHeader>
+				<CardContent className="space-y-4">
+					{cartItems?.map((item) => (
+						<div
+							key={item._id}
+							className="flex items-center justify-between py-4 border-b last:border-b-0"
+						>
+							<div className="mr-3">
+								<img src={item.image} className="size-20 object-cover rounded-sm border" alt="" />
+							</div>
+							<div className="flex-1">
+								<h4 className="font-medium">
+									{item.name}
+								</h4>
+								<p className="text-sm text-gray-600 dark:text-white/70">
+									Rs. {item.priceOfEach.toFixed(2)} each
+								</p>
+							</div>
+							<div className="flex items-center gap-3">
+								<div className="flex items-center gap-2 dark:bg-black bg-gray-100 rounded-lg p-1">
+									<Button
+										size="sm"
+										variant="ghost"
+										className="h-8 w-8 p-0"
+									>
+										<Minus className="h-4 w-4" />
+									</Button>
+									<span className="w-8 text-center">
+										{item.quantity}
+									</span>
+									<Button
+										size="sm"
+										variant="ghost"
+										className="h-8 w-8 p-0"
+									>
+										<Plus className="h-4 w-4" />
+									</Button>
+								</div>
+								<div className="text-right min-w-[80px]">
+									<p className="font-medium">
+										Rs.
+										{
+											item.totalPrice
+										}
+									</p>
+								</div>
+								<Button
+									size="sm"
+									variant="ghost"
+									className="text-red-600 hover:text-red-700 h-8 w-8 p-0"
+								>
+									<Trash2 className="h-4 w-4" />
+								</Button>
+							</div>
+						</div>
+					))}
+				</CardContent>
+			</Card>
+
+			{/* Special Instructions */}
+			<Card>
+				<CardHeader>
+					<CardTitle>Special Instructions</CardTitle>
+					<CardDescription>
+						Any special requests or notes for your
+						order?
+					</CardDescription>
+				</CardHeader>
+				<CardContent>
+					<Textarea
+						placeholder="e.g., No onions, extra sauce, etc."
+						value={specialInstructions}
+						onChange={(e) =>
+							setSpecialInstructions(e.target.value)
+						}
+					/>
+				</CardContent>
+			</Card>
+		</>
+	)
+}
+
+const OrderSummary = ({ total, tax, orderType, deliveryFee, grandTotal, loyalityPoints }: OrderSummaryType) => {
+	return (<Card>
+		<CardHeader>
+			<CardTitle className="flex items-center gap-2">
+				<CreditCard className="h-5 w-5" />
+				Order Summary
+			</CardTitle>
+		</CardHeader>
+		<CardContent className="space-y-4">
+			<div className="flex justify-between">
+				<span>Subtotal</span>
+				<span>Rs. {total.toFixed(2)}</span>
+			</div>
+			<div className="flex justify-between">
+				<span>Tax</span>
+				<span>Rs. {tax.toFixed(2)}</span>
+			</div>
+			{orderType === "delivery" && (
+				<div className="flex justify-between">
+					<span>Delivery Fee</span>
+					<span>
+						{total > 30 ? (
+							<span className="text-green-500">
+								FREE
+							</span>
+						) : (
+							`Rs. ${deliveryFee}`
+						)}
+					</span>
+				</div>
+			)}
+			<Separator />
+			<div className="flex justify-between font-bold text-lg">
+				<span>Total</span>
+				<span>Rs. {grandTotal}</span>
+			</div>
+
+			{loyalityPoints && (
+				<div className="bg-green-50 p-3 rounded-lg">
+					<p className="text-sm text-green-800">
+						💎 You have {loyalityPoints} loyalty points
+					</p>
+					<p className="text-xs text-green-600">
+						You'll earn 10 points from this order
+					</p>
+				</div>
+			)}
+		</CardContent>
+	</Card>
+	)
+}
+
+const PaymentMethod = ({ paymentMethod, setPaymentMethod }: PaymentMethodType) => {
+	return (
+		<Card>
+			<CardHeader>
+				<CardTitle>Payment Method</CardTitle>
+			</CardHeader>
+			<CardContent className="space-y-4">
+				<Select
+					value={paymentMethod}
+					onValueChange={setPaymentMethod}
+				>
+					<SelectTrigger>
+						<SelectValue />
+					</SelectTrigger>
+					<SelectContent>
+						<SelectItem value="card">
+							Credit/Debit Card
+						</SelectItem>
+						<SelectItem value="paypal">
+							PayPal
+						</SelectItem>
+						<SelectItem value="cash">
+							Cash on Delivery
+						</SelectItem>
+					</SelectContent>
+				</Select>
+
+				{paymentMethod === "card" && (
+					<div className="space-y-3">
+						<Input placeholder="Card Number" />
+						<div className="grid grid-cols-2 gap-3">
+							<Input placeholder="MM/YY" />
+							<Input placeholder="CVV" />
+						</div>
+						<Input placeholder="Cardholder Name" />
+					</div>
+				)}
+			</CardContent>
+		</Card>
+	)
+}
+
+const EstimatedTime = ({ orderType }: { orderType: string }) => {
+	return (
+		<Card>
+			<CardContent className="pt-6">
+				<div className="flex items-center gap-3 text-center">
+					<Clock className="h-5 w-5 text-green-600" />
+					<div className="flex flex-col items-start">
+						<p className="font-medium">
+							Estimated Time
+						</p>
+						<p className="text-sm text-gray-600 dark:text-white/70">
+							{orderType === "delivery" &&
+								"30-45 minutes"}
+							{orderType === "takeaway" &&
+								"15-20 minutes"}
+							{orderType === "dine-in" &&
+								"Immediate seating"}
+						</p>
+					</div>
+				</div>
+			</CardContent>
+		</Card>
+	)
+}
+
+
 
 export default CustomerCartPage;

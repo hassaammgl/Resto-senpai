@@ -17,7 +17,7 @@ type AuthUser = {
 	email: string;
 	role: string;
 	phone: string;
-	loyaltyPoints?: string;
+	loyaltyPoints?: string | undefined;
 	address?: UserAddress | null;
 	restorantName?: string;
 };
@@ -46,7 +46,6 @@ export type AuthState = {
 	clearError: () => void;
 };
 
-
 export interface MenuState {
 	menuItems: DishData[];
 	isLoading: boolean;
@@ -57,8 +56,6 @@ export interface MenuState {
 	getAllDishes: () => Promise<void>;
 	clearError: () => void;
 }
-
-/////////////////////////
 
 export interface CartStore {
 	_id?: string;
@@ -83,6 +80,7 @@ export interface DishData {
 	isVegetarian: boolean;
 	isPopular: boolean;
 	prepTime: string;
+	rating: number;
 }
 
 export interface CartState {
