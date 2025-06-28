@@ -10,9 +10,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/store/auth";
-import { useState } from "react";
+import React, { useState } from "react";
 import { useToast } from "@/hooks/useToast";
 import { AxiosError } from "axios";
+import Loader from "@/components/shared/Loader";
 
 const CustomerProfilePage = () => {
 	return (
@@ -45,6 +46,7 @@ const UpdateUserDetails = () => {
 		name: user?.name ?? "",
 		phone: user?.phone ?? "",
 	})
+	const [isLoading, setIsLoading] = useState(false);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
@@ -54,11 +56,14 @@ const UpdateUserDetails = () => {
 		})
 	}
 
-	const handleSubmit = async () => {
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault()
+		setIsLoading(true)
 		try {
 			console.table(userDetails);
 			await updateCustomerDetails(userDetails);
 			success("User details updated successfully! 🎉");
+			setIsLoading(false)
 		} catch (err) {
 			const message =
 				(err as AxiosError<{ message?: string }>)?.response?.data
@@ -66,6 +71,7 @@ const UpdateUserDetails = () => {
 				(err as Error)?.message ??
 				"Failed to update user details 😵";
 			error(message);
+			setIsLoading(false)
 		}
 	}
 
@@ -88,7 +94,7 @@ const UpdateUserDetails = () => {
 						<Input onChange={handleChange} id="phone" name="phone" value={userDetails.phone} />
 					</div>
 					<Button type="submit" className="bg-green-600 hover:bg-green-700">
-						Save Changes
+						{isLoading && <Loader size={1} />}	Save Changes
 					</Button>
 				</CardContent>
 			</Card>
@@ -97,8 +103,44 @@ const UpdateUserDetails = () => {
 }
 
 const DeliveryAddressDetails = () => {
-	const { user } = useAuth();
-	const handleSubmit = async () => { }
+
+	const { user, updateCustomerAddress } = useAuth();
+	const { success, error } = useToast()
+
+	const [userDetails, setUserDetails] = useState({
+		street: user?.address?.street ?? "",
+		city: user?.address?.city ?? "",
+		state: user?.address?.state ?? "",
+		zipCode: user?.address?.zipCode ?? "",
+	})
+	const [isLoading, setIsLoading] = useState(false);
+
+	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const { name, value } = e.target;
+		setUserDetails({
+			...userDetails,
+			[name]: value
+		})
+	}
+
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault()
+		setIsLoading(true)
+		try {
+			console.table(userDetails);
+			await updateCustomerAddress(userDetails);
+			success("User address updated successfully! 🎉");
+			setIsLoading(false)
+		} catch (err) {
+			const message =
+				(err as AxiosError<{ message?: string }>)?.response?.data
+					?.message ??
+				(err as Error)?.message ??
+				"Failed to update user address 😵";
+			error(message);
+			setIsLoading(false)
+		}
+	}
 
 	return (
 		<form onSubmit={handleSubmit}>
@@ -117,18 +159,22 @@ const DeliveryAddressDetails = () => {
 							</Label>
 							<Input
 								id="street"
+								name="street"
 								value={
 									user?.address?.street
 								}
+								onChange={handleChange}
 							/>
 						</div>
 						<div className="flex gap-1 flex-col">
 							<Label htmlFor="city">City</Label>
 							<Input
 								id="city"
+								name="city"
 								value={
 									user?.address?.city
 								}
+								onChange={handleChange}
 							/>
 						</div>
 					</div>
@@ -136,10 +182,12 @@ const DeliveryAddressDetails = () => {
 						<div className="flex gap-1 flex-col">
 							<Label htmlFor="state">State</Label>
 							<Input
+								name="state"
 								id="state"
 								value={
 									user?.address?.state
 								}
+								onChange={handleChange}
 							/>
 						</div>
 						<div className="flex gap-1 flex-col">
@@ -148,14 +196,16 @@ const DeliveryAddressDetails = () => {
 							</Label>
 							<Input
 								id="zip"
+								name="zip"
 								value={
 									user?.address?.zipCode
 								}
+								onChange={handleChange}
 							/>
 						</div>
 					</div>
 					<Button type="submit" className="bg-green-600 hover:bg-green-700">
-						Update Address
+						{isLoading && <Loader size={1} />}	Update Address
 					</Button>
 				</CardContent>
 			</Card>

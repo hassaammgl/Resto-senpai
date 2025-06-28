@@ -115,4 +115,49 @@ export class AuthService {
         }
 
     }
+
+    static async updateCustomerProfile(data, userId) {
+        try {
+            const isUserExist = await User.findByIdAndUpdate({ _id: userId }, { ...data });
+            if (!isUserExist) {
+                return new AppError("User not Found")
+            }
+            await isUserExist.save()
+            return {
+                user: DTO.updatedUser(isUserExist),
+            }
+        } catch (error) {
+            throw new AppError(error.message);
+        }
+    }
+
+    static async updateCustomerAddress(data, userId) {
+        try {
+
+            const {
+                city,
+                state,
+                street,
+                zipCode,
+            } = data;
+
+            const isUserExist = await User.findById({ _id: userId });
+            if (!isUserExist) {
+                return new AppError("User not Found")
+            }
+
+            if (city) isUserExist.address.city = city;
+            if (state) isUserExist.address.state = state;
+            if (street) isUserExist.address.street = street;
+            if (zipCode) isUserExist.address.zipCode = zipCode;
+            await isUserExist.save()
+            // return {
+            //     user: DTO.updatedUser(isUserExist),
+            // }
+            console.log(isUserExist);
+
+        } catch (error) {
+            throw new AppError(error.message);
+        }
+    }
 }
