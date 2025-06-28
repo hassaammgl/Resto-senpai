@@ -27,7 +27,12 @@ interface UpdateAddressInterface extends UserAddress {
 	restorantName: string | undefined;
 }
 
-export type AuthState = {
+type updateCustomerDetailsType = {
+	name: string;
+	phone: string;
+};
+
+export interface AuthState {
 	user: AuthUser | null;
 	isAuthenticated: boolean;
 	isLoading: boolean;
@@ -43,8 +48,10 @@ export type AuthState = {
 	logout: () => Promise<void>;
 	updateAddress: (data: UpdateAddressInterface) => Promise<void>;
 	checkIsAuthenticated: () => Promise<void>;
+	updateCustomerDetails: (data: updateCustomerDetailsType) => Promise<void>;
+	updateCustomerAddress: (data: UserAddress) => Promise<void>;
 	clearError: () => void;
-};
+}
 
 export interface MenuState {
 	menuItems: DishData[];

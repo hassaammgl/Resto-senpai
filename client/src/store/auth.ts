@@ -101,6 +101,46 @@ export const useAuth = create<AuthState>()(
 					set({ isLoading: false });
 				}
 			},
+			updateCustomerAddress: async (address) => {
+				try {
+					set({ isLoading: true, error: null });
+
+					const { data } = await axiosInstance.post(
+						"/api/auth/update-customer-address",
+						{
+							...address,
+						}
+					);
+
+					set({ user: data.data });
+				} catch (err: any) {
+					const errorMessage = getErrorMessage(err);
+					set({ error: errorMessage });
+					throw new Error(errorMessage);
+				} finally {
+					set({ isLoading: false });
+				}
+			},
+			updateCustomerDetails: async (user) => {
+				try {
+					set({ isLoading: true, error: null });
+
+					const { data } = await axiosInstance.post(
+						"/api/auth/update-customer-details",
+						{
+							...user,
+						}
+					);
+
+					set({ user: data.data });
+				} catch (err: any) {
+					const errorMessage = getErrorMessage(err);
+					set({ error: errorMessage });
+					throw new Error(errorMessage);
+				} finally {
+					set({ isLoading: false });
+				}
+			},
 			checkIsAuthenticated: async () => {
 				try {
 					set({ isLoading: true, error: null });
@@ -123,7 +163,6 @@ export const useAuth = create<AuthState>()(
 					set({ isLoading: false });
 				}
 			},
-
 			clearError: () => set({ error: null }),
 		}),
 		{

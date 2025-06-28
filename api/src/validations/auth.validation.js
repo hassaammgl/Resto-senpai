@@ -26,3 +26,16 @@ export const updateUserDetails = Joi.object({
     street: Joi.string().required(),
     zipCode: Joi.number().required(),
 })
+
+export const updateCustomerAdd = Joi.object({
+    city: Joi.string().required(),
+    state: Joi.string().required(),
+    street: Joi.string().required(),
+    zipCode: Joi.number().required(),
+});
+
+export const updateCustomerDet = Joi.object({
+    phone: Joi.string().required(),
+    name: Joi.string().required(),
+})
+

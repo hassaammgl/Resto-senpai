@@ -20,6 +20,7 @@ import { useState, useEffect } from "react";
 import { useCart } from "@/store/cart";
 import type { DishData } from "@/types"
 import StarRating from "@/components/shared/StarRating";
+import { NavLink } from "react-router";
 
 const CustomerMenuPage = () => {
 
@@ -93,15 +94,17 @@ const CustomerMenuPage = () => {
 								🚚 Free delivery over Rs. 30
 							</p>
 						</div>
-						<Button className="bg-green-600 hover:bg-green-700 relative">
-							<ShoppingCart className="h-4 w-4 mr-2" />
-							Cart ({cartItemCount})
-							{cartItemCount > 0 && (
-								<Badge className="ml-2 bg-white text-green-600">
-									Rs. {price.toFixed(2)}
-								</Badge>
-							)}
-						</Button>
+						<NavLink to={"/customer/cart"} >
+							<Button className="bg-green-600 hover:bg-green-700 relative">
+								<ShoppingCart className="h-4 w-4 mr-2" />
+								Cart ({cartItemCount})
+								{cartItemCount > 0 && (
+									<Badge className="ml-2 bg-white text-green-600">
+										Rs. {price.toFixed(2)}
+									</Badge>
+								)}
+							</Button>
+						</NavLink>
 					</div>
 				</div>
 

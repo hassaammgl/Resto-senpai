@@ -53,3 +53,13 @@ export const updateUserData = asyncHandler(async (req, res) => {
         data: user
     })
 })
+
+export const updateCustomerDetails = asyncHandler(async (req, res) => {
+    console.log("Details ----->");
+    console.log(req.body, req.user._id);
+})
+
+export const updateCustomerAddress = asyncHandler(async (req, res) => {
+    console.log("Address ----->");
+    console.log(req.body, req.user._id);
+})
