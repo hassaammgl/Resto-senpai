@@ -123,6 +123,9 @@ const DeliveryAddressDetails = () => {
 		})
 	}
 
+	console.log(user);
+	
+
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 		setIsLoading(true)
@@ -195,8 +198,8 @@ const DeliveryAddressDetails = () => {
 								ZIP Code
 							</Label>
 							<Input
-								id="zip"
-								name="zip"
+								id="zipCode"
+								name="zipCode"
 								value={
 									user?.address?.zipCode
 								}

@@ -61,7 +61,7 @@ export const updateCustomerDetails = asyncHandler(async (req, res) => {
     console.log(user);
     return ApiResponse.success(res, {
         statusCode: 204,
-        message: "User Updated Succesfully",
+        message: "Details Updated Succesfully",
         data: user
     })
 })
@@ -69,11 +69,11 @@ export const updateCustomerDetails = asyncHandler(async (req, res) => {
 export const updateCustomerAddress = asyncHandler(async (req, res) => {
     console.log("Address ----->");
     console.log(req.body, req.user._id);
-    const { user } = await AuthService.updateCustomerProfile(req.body, req.user._id, true)
+    const { user } = await AuthService.updateCustomerAddress(req.body, req.user._id)
     console.log(user);
     return ApiResponse.success(res, {
         statusCode: 204,
-        message: "User Updated Succesfully",
+        message: "Address Updated Succesfully",
         data: user
     })
 })
